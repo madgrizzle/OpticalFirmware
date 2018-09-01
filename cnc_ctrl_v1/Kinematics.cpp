@@ -215,20 +215,20 @@ void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLe
     float Chain2AroundSprocket = 0;
 
     //Calculate motor axes length to the bit
-    float Motor1Distance = sqrt(pow((-1*_xCordOfMotor - xTarget),2)+pow((_yCordOfMotor - yTarget),2));
-    float Motor2Distance = sqrt(pow((_xCordOfMotor - xTarget),2)+pow((_yCordOfMotor - yTarget),2));
+    float Motor1Distance = sqrt(pow((leftMotorX - xTarget),2)+pow((leftMotorY - yTarget),2)); // updated to reflect new way of using X,Y coordinates of motors
+    float Motor2Distance = sqrt(pow((rightMotorX - xTarget),2)+pow((rightMotorY - yTarget),2)); // updated to reflect new way of using X,Y coordinates of motors
 
     //Calculate the chain angles from horizontal, based on if the chain connects to the sled from the top or bottom of the sprocket
     if(sysSettings.chainOverSprocket == 1){
-        Chain1Angle = asin((_yCordOfMotor - yTarget)/Motor1Distance) + asin(R/Motor1Distance); //removed chain tolerance
-        Chain2Angle = asin((_yCordOfMotor - yTarget)/Motor2Distance) + asin(R/Motor2Distance); //removed chain tolerance
+        Chain1Angle = asin((leftMotorY - yTarget)/Motor1Distance) + asin(R/Motor1Distance); //removed chain tolerance, updated to reflect new way of using X,Y coordinates of motors
+        Chain2Angle = asin((rightMotorY - yTarget)/Motor2Distance) + asin(R/Motor2Distance); //removed chain tolerance, updated to reflect new way of using X,Y coordinates of motors
 
         Chain1AroundSprocket = R * Chain1Angle; //removed chain tolerance
         Chain2AroundSprocket = R * Chain2Angle; //removed chain tolerance
     }
     else{
-        Chain1Angle = asin((_yCordOfMotor - yTarget)/Motor1Distance) - asin(R/Motor1Distance); //removed chain tolerance
-        Chain2Angle = asin((_yCordOfMotor - yTarget)/Motor2Distance) - asin(R/Motor2Distance); //removed chain tolerance
+        Chain1Angle = asin((leftMotorY - yTarget)/Motor1Distance) - asin(R/Motor1Distance); //removed chain tolerance, updated to reflect new way of using X,Y coordinates of motors
+        Chain2Angle = asin((rightMotorY - yTarget)/Motor2Distance) - asin(R/Motor2Distance); //removed chain tolerance, updated to reflect new way of using X,Y coordinates of motors
 
         Chain1AroundSprocket = R * (3.14159 - Chain1Angle); //removed chain tolerance
         Chain2AroundSprocket = R * (3.14159 - Chain2Angle); //removed chain tolerance
