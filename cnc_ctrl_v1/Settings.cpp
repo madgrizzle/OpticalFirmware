@@ -406,13 +406,13 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.distPerRotLeftChainTolerance = value;
               kinematics.recomputeGeometry();
               //leftAxis.changePitch(&sysSettings.distPerRotLeftChainTolerance);
-              kinematics.RleftChainTolerance = (sysSettings.distPerRotLeftChainTolerance)/(2.0 * 3.14159);
+              //kinematics.RleftChainTolerance = (sysSettings.distPerRotLeftChainTolerance)/(2.0 * 3.14159);
               break;
         case 41:
               sysSettings.distPerRotRightChainTolerance = value;
               kinematics.recomputeGeometry();
               //rightAxis.changePitch(&sysSettings.distPerRotRightChainTolerance);
-              kinematics.RrightChainTolerance = (sysSettings.distPerRotRightChainTolerance)/(2.0 * 3.14159);
+              //kinematics.RrightChainTolerance = (sysSettings.distPerRotRightChainTolerance)/(2.0 * 3.14159);
               break;
         case 42:
               sysSettings.positionErrorLimit = value;
