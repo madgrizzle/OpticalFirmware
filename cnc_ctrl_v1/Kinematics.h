@@ -12,9 +12,9 @@
 
     You should have received a copy of the GNU General Public License
     along with the Maslow Control Software.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Copyright 2014-2017 Bar Smith*/
-    
+
     #ifndef Kinematics_h
     #define Kinematics_h
 
@@ -40,7 +40,7 @@
             float R             = 10.1;                                //sprocket radius
             float RleftChainTolerance = 10.1;    // Left sprocket radius including chain tolerance
             float RrightChainTolerance = 10.1;    // Right sprocket radius including chain tolerance
-            
+
 
 
             float halfWidth;                      //Half the machine width
@@ -56,13 +56,18 @@
             float y = 0;
             float _xCordOfMotor;
             float _yCordOfMotor;
-
+            float leftMotorX = -1800.0;
+            float leftMotorY = -1200.0;
+            float rightMotorX = 1800.0;
+            float rightMotorY = -1200.0;
+            float leftChainTolerance = 1;
+            float rightChainTolerance = 1;
             //utility variables
             boolean Mirror;
 
             //Criterion Computation Variables
             float Phi = -0.2;
-            float TanGamma; 
+            float TanGamma;
             float TanLambda;
             float Y1Plus ;
             float Y2Plus;
@@ -96,7 +101,7 @@
             float Motor2Distance; //right motor axis distance to sled
 
             // output = chain lengths measured from 12 o'clock
-            float Chain1; //left chain length 
+            float Chain1; //left chain length
             float Chain2; //right chain length
     };
 
