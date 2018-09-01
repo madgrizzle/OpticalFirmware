@@ -60,9 +60,9 @@ void Kinematics::recomputeGeometry(){
     _yCordOfMotor = halfHeight + sysSettings.motorOffsetY;
 
     leftMotorX = cos(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/-2.0;
-    leftMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/-2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0)*-1.0;
+    leftMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0);
     rightMotorX = cos(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors+leftMotorX;
-    rightMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0)*-1.0;
+    rightMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0);
 
     leftChainTolerance = sysSettings.distPerRot/sysSettings.distPerRotLeftChainTolerance; //doing it this way only to reduce changes to existing code
     rightChainTolerance = sysSettings.distPerRot/sysSettings.distPerRotRightChainTolerance; //doing it this way only to reduce changes to existing code
