@@ -227,7 +227,7 @@ void reportMaslowSettings() {
     Serial.print(F(" (PWM frequency value 1=39,000Hz, 2=4,100Hz, 3=490Hz)\r\n$40=")); Serial.print(sysSettings.distPerRotLeftChainTolerance, 8);
     Serial.print(F(" (distance / rotation, including chain tolerance, left chain, mm)\r\n$41=")); Serial.print(sysSettings.distPerRotRightChainTolerance, 8);
     Serial.print(F(" (distance / rotation, including chain tolerance, right chain, mm)\r\n$42=")); Serial.print(sysSettings.positionErrorLimit, 8);
-    Serial.print(F(" (position error alarm limit, mm)")); Serial.print(sysSettings.topBeamTilt, 8);
+    Serial.print(F(" (position error alarm limit, mm\r\n$43=)")); Serial.print(sysSettings.topBeamTilt, 8);
     Serial.print(F(" (top beam tilt, degrees)"));
     Serial.println();
   #endif
