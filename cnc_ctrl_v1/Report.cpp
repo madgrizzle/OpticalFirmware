@@ -228,7 +228,13 @@ void reportMaslowSettings() {
     Serial.print(F(" (distance / rotation, including chain tolerance, left chain, mm)\r\n$41=")); Serial.print(sysSettings.distPerRotRightChainTolerance, 8);
     Serial.print(F(" (distance / rotation, including chain tolerance, right chain, mm)\r\n$42=")); Serial.print(sysSettings.positionErrorLimit, 8);
     Serial.print(F(" (position error alarm limit, mm\r\n$43=)")); Serial.print(sysSettings.topBeamTilt, 8);
-    Serial.print(F(" (top beam tilt, degrees)"));
+    Serial.print(F(" (top beam tilt, degrees)\r\n")); Serial.print(kinematics.leftChainTolerance,8);
+    Serial.print(F(" (left chain tolerance, degrees)\r\n")); Serial.print(kinematics.rightChainTolerance,8);
+    Serial.print(F(" (right chain tolerance, degrees)\r\n")); Serial.print(kinematics.leftMotorX,8);
+    Serial.print(F(" (left Motor X, mm)\r\n")); Serial.print(kinematics.leftMotorY,8);
+    Serial.print(F(" (left Motor Y, mm)\r\n")); Serial.print(kinematics.rightMotorX,8);
+    Serial.print(F(" (right Motor X, mm)\r\n")); Serial.print(kinematics.rightMotorY,8);
+    Serial.print(F(" (right Motor Y, mm)\r\n"));
     Serial.println();
   #endif
 }
