@@ -76,7 +76,7 @@ void settingsReset() {
     sysSettings.rotationDiskRadius = 250.0;  // float rotationDiskRadius;
     sysSettings.axisDetachTime = 2000;   // int axisDetachTime;
     sysSettings.originalChainLength = 1650;   // int originalChainLength;
-    sysSettings.encoderSteps = 8113.7; // float encoderSteps;
+    sysSettings.encoderSteps = 8113.73; // float encoderSteps;  fixed to correct value
     sysSettings.distPerRot = 63.5;   // float distPerRot;
     sysSettings.maxFeed = 700;   // int maxFeed;
     sysSettings.zAxisAttached = true;   // zAxisAttached;
@@ -270,7 +270,8 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.originalChainLength = value;
               break;
         case 12:
-              sysSettings.encoderSteps = value;
+              sysSettings.encoderSteps = 8113.73;
+              //sysSettings.encoderSteps = value;
               leftAxis.changeEncoderResolution(&sysSettings.encoderSteps);
               rightAxis.changeEncoderResolution(&sysSettings.encoderSteps);
               if (sys.oldSettingsFlag){
