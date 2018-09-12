@@ -239,9 +239,22 @@ void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLe
     float Chain2Straight = sqrt(pow(Motor2Distance,2)-pow(R,2)); //removed chain tolerance
 
     //Correct the straight chain lengths to account for chain sag
-    Chain1Straight *= (1 + ((sysSettings.chainSagCorrection / 1000000000000) * pow(cos(Chain1Angle),2) * pow(Chain1Straight,2) * pow((tan(Chain2Angle) * cos(Chain1Angle)) + sin(Chain1Angle),2)));
-    Chain2Straight *= (1 + ((sysSettings.chainSagCorrection / 1000000000000) * pow(cos(Chain2Angle),2) * pow(Chain2Straight,2) * pow((tan(Chain1Angle) * cos(Chain2Angle)) + sin(Chain2Angle),2)));
-
+    if (sysSettings.chainSagCorrection>0) {
+        Chain1Straight *= (1 + ((sysSettings.chainSagCorrection / 1000000000000) * pow(cos(Chain1Angle),2) * pow(Chain1Straight,2) * pow((tan(Chain2Angle) * cos(Chain1Angle)) + sin(Chain1Angle),2)));
+        Chain2Straight *= (1 + ((sysSettings.chainSagCorrection / 1000000000000) * pow(cos(Chain2Angle),2) * pow(Chain2Straight,2) * pow((tan(Chain1Angle) * cos(Chain2Angle)) + sin(Chain2Angle),2)));
+    }
+    else {
+      leftForce = sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*math.sqrt(math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2))
+      rightForce =sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*math.sqrt(math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2))
+      hl = math.cos(Chain1Angle)*Chain1Straight*0.00328084
+      hr = math.cos(Chane2Angle)*Chain2Straight*0.00328084
+      vl = math.sin(Chain1Angle)*Chain1Straight*0.00328084
+      vr = math.sin(Chain2Angle)*Chain2Straight*0.00328084
+      al = math.cos(Chain1Angle)*leftForce/(0.09)
+      ar = math.cos(Chain2Angle)*rightForce/(0.09)
+      Chain1Straight = math.sqrt( math.pow((2*al*math.sinh(hl/(2*al))),2)+vl*vl)/0.00328084
+      Chain2Straight = math.sqrt( math.pow((2*ar*math.sinh(hr/(2*ar))),2)+vr*vr)/0.00328084
+    }
     //Calculate total chain lengths accounting for sprocket geometry and chain sag
     float Chain1 = Chain1AroundSprocket + Chain1Straight * leftChainTolerance; // added the chain tolerance here.. this should be <=  1
     float Chain2 = Chain2AroundSprocket + Chain2Straight * rightChainTolerance; // added the chain tolerance here.. this should be <=  1
