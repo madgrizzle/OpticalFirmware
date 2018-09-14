@@ -65,7 +65,7 @@ void   setupAxes(){
 
     */
 
-    
+
     int encoder1A;
     int encoder1B;
     int encoder2A;
@@ -437,6 +437,7 @@ byte systemExecuteCmdstring(String& cmdString){
     byte char_counter = 1;
 //    byte helper_var = 0; // Helper variable
     float parameter, value;
+    int _x, _y, xValue, yValue;
     if (cmdString.length() == 1){
         reportMaslowHelp();
     }
@@ -565,6 +566,10 @@ byte systemExecuteCmdstring(String& cmdString){
           //         helper_var = true;  // Set helper_var to flag storing method.
           //         // No break. Continues into default: to read remaining command characters.
           //       }
+              case 'O' : // Here's were we can send customized data that doesn't fit the firmwareKey/floating
+                if(!readArrayValue(cmdString, char_counter, _x, _y, xValue, yValue)) {return(STATUS_BAD_NUMBER_FORMAT); }
+                return(calibrationUpdateMatrix(_x, _y, xValue, yValue));
+                break;
               default :  // Storing setting methods [IDLE/ALARM]
                 if(!readFloat(cmdString, char_counter, parameter)) { return(STATUS_BAD_NUMBER_FORMAT); }
                 if(cmdString[char_counter++] != '=') { return(STATUS_INVALID_STATEMENT); }

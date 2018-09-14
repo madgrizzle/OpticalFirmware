@@ -244,16 +244,16 @@ void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLe
         Chain2Straight *= (1 + ((sysSettings.chainSagCorrection / 1000000000000) * pow(cos(Chain2Angle),2) * pow(Chain2Straight,2) * pow((tan(Chain1Angle) * cos(Chain2Angle)) + sin(Chain2Angle),2)));
     }
     else {
-      leftForce = sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*math.sqrt(math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2))
-      rightForce =sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*math.sqrt(math.pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+math.pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2))
-      hl = math.cos(Chain1Angle)*Chain1Straight*0.00328084
-      hr = math.cos(Chane2Angle)*Chain2Straight*0.00328084
-      vl = math.sin(Chain1Angle)*Chain1Straight*0.00328084
-      vr = math.sin(Chain2Angle)*Chain2Straight*0.00328084
-      al = math.cos(Chain1Angle)*leftForce/(0.09)
-      ar = math.cos(Chain2Angle)*rightForce/(0.09)
-      Chain1Straight = math.sqrt( math.pow((2*al*math.sinh(hl/(2*al))),2)+vl*vl)/0.00328084
-      Chain2Straight = math.sqrt( math.pow((2*ar*math.sinh(hr/(2*ar))),2)+vr*vr)/0.00328084
+      float leftForce = sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*sqrt(pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2));
+      float rightForce =sysSettings.chainSagCorrection*-1.0/((xTarget-leftMotorX)/(leftMotorY-yTarget)+(rightMotorX-xTarget)/(rightMotorY-yTarget))*sqrt(pow(((rightMotorX-xTarget)/(rightMotorY-yTarget)),2)*pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2)+pow(((xTarget-leftMotorX)/(leftMotorY-yTarget)),2));
+      float hl = cos(Chain1Angle)*Chain1Straight*0.00328084;
+      float hr = cos(Chain2Angle)*Chain2Straight*0.00328084;
+      float vl = sin(Chain1Angle)*Chain1Straight*0.00328084;
+      float vr = sin(Chain2Angle)*Chain2Straight*0.00328084;
+      float al = cos(Chain1Angle)*leftForce/(0.09);
+      float ar = cos(Chain2Angle)*rightForce/(0.09);
+      Chain1Straight = sqrt( pow((2*al*sinh(hl/(2*al))),2)+vl*vl)/0.00328084;
+      Chain2Straight = sqrt( pow((2*ar*sinh(hr/(2*ar))),2)+vr*vr)/0.00328084;
     }
     //Calculate total chain lengths accounting for sprocket geometry and chain sag
     float Chain1 = Chain1AroundSprocket + Chain1Straight * leftChainTolerance; // added the chain tolerance here.. this should be <=  1

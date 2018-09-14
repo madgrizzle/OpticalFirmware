@@ -22,11 +22,11 @@ Copyright 2014-2017 Bar Smith*/
 float readFloat(const String& str, byte& index, float& retVal){
     /*
     Takes a string and a starting character index and returns a float if it can
-    be parsed from the string, it will skip leading spaces.  Does not support 
-    scientific notation as this is officially not supported by GCode.  
-    Code was adopted from arduino Stream::parseFloat and some from Grbl's 
-    read_float.  It is a custom function because all arduino and c++ functions 
-    appear to handle scientific notation or hexadecimal notation, or some other 
+    be parsed from the string, it will skip leading spaces.  Does not support
+    scientific notation as this is officially not supported by GCode.
+    Code was adopted from arduino Stream::parseFloat and some from Grbl's
+    read_float.  It is a custom function because all arduino and c++ functions
+    appear to handle scientific notation or hexadecimal notation, or some other
     type of numerical representation that we don't want supported.
     */
     bool isNegative = false;
@@ -62,6 +62,54 @@ float readFloat(const String& str, byte& index, float& retVal){
       retVal = value * fraction;
     else
       retVal = value;
+
+    return true;
+}
+
+float readArrayValue(const String& str, byte& index, int& x, int& y, int& xValue, int& yValue){
+    /*
+    Don't mind scientific notation here..  no big whoop
+    */
+    //remove any spaces before start of parsing
+    while (str[index] == ' ' && index < str.length()){
+      index++;
+    }
+    // parse out based upon commands
+    // make it easy.. parse xS, parse yS, parse xValueS, parse yValueS
+    String xS = "";
+    while ((str[index]<str.length()) && (str[index]!=',') ){
+      xS.concat(str[index]);
+      index++;
+    }
+    index++; // get past the comma
+
+    String yS = "";
+    while ((str[index]<str.length()) && (str[index]!=',') ){
+      yS.concat(str[index]);
+      index++;
+    }
+    index++; // get past the comma
+
+    String xValueS = "";
+    while ((str[index]<str.length()) && (str[index]!=',') ){
+      xValueS.concat(str[index]);
+      index++;
+    }
+    index++; // get past the comma
+
+    String yValueS = "";
+    while ((str[index]<str.length()) && (str[index]!=',') ){
+      yValueS.concat(str[index]);
+      index++;
+    }
+    index++; // get past the comma
+
+
+    //now convert to Values
+    x = xS.toInt();
+    y = yS.toInt();
+    xValue = xValueS.toInt();
+    yValue = yValueS.toInt();
 
     return true;
 }
