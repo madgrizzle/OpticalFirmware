@@ -9,27 +9,27 @@
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
     along with the Maslow Control Software.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Copyright 2014-2017 Bar Smith*/
-	
-	
+
+
 /* To the projects contributers:
  *
  * it is highly recommended to activate warning output of the arduino gcc compiler.
  * Compiler warnings are a great help to keep the codebase clean and can give clues
- * to potentally wrong code. Also, if a codebase produces too many warnings it gets 
- * more likely that possibly important warnings could be overlooked. 
+ * to potentally wrong code. Also, if a codebase produces too many warnings it gets
+ * more likely that possibly important warnings could be overlooked.
  *
  * Since the Arduino IDE suppresses any compiler output by default we have to activate it.
  *
- * Therefore Arduino IDE users need to activate compiler output in the 
+ * Therefore Arduino IDE users need to activate compiler output in the
  * preferences dialog. Additionally Arduino IDE needs to tell the compiler to generate
- * warning  messages. This is done in the Arduino IDE's preferences.txt file - you can 
- * get there via the Preferences Dialog - there is a link to the file at the bottom. 
+ * warning  messages. This is done in the Arduino IDE's preferences.txt file - you can
+ * get there via the Preferences Dialog - there is a link to the file at the bottom.
  * Edit the line "compiler.warning_level=none" to "compiler.warning_level=all"
  * and restart the IDE.
  */
-    
+
 
 // TLE5206 version
 
@@ -41,8 +41,11 @@ system_t sys;
 // Define the global settings storage - treat as readonly
 settings_t sysSettings;
 
+// Define the calibraiton values
+calibration_t calibration;
+
 // Global realtime executor bitflag variable for setting various alarms.
-byte systemRtExecAlarm;  
+byte systemRtExecAlarm;
 
 // Define axes, it might be tighter to define these within the sys struct
 Axis leftAxis;
@@ -75,7 +78,7 @@ void setup(){
     Timer1.initialize(LOOPINTERVAL);
     Timer1.attachInterrupt(runsOnATimer);
     #endif
-    
+
     Serial.println(F("Grbl v1.00"));  // Why GRBL?  Apparently because some programs are silly and look for this as an initialization command
     Serial.println(F("ready"));
     reportStatusMessage(STATUS_OK);
@@ -98,12 +101,12 @@ void loop(){
     // This section is called on startup and whenever a stop command is issued
     initGCode();
     if (sys.stop){               // only called on sys.stop to prevent stopping
-        initMotion();            // on USB disconnect.  Might consider removing 
-        setSpindlePower(false);  // this restriction for safety if we are 
+        initMotion();            // on USB disconnect.  Might consider removing
+        setSpindlePower(false);  // this restriction for safety if we are
     }                            // comfortable that USB disconnects are
                                  // not a common occurrence anymore
     kinematics.init();
-    
+
     // Let's go!
     sys.stop = false;            // We should consider an abort option which
                                  // is not reset automatically such as a software
