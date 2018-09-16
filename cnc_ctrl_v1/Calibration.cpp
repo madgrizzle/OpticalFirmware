@@ -42,6 +42,15 @@ byte calibrationUpdateMatrix(int _x, int _y, int xValue, int yValue) {
       if ( (_y>=0) && (_y<15) ){
           calibration.xError[_x][_y]=xValue;
           calibration.yError[_x][_y]=yValue;
+          if ((_x==15) && (_y==7)){
+            kinematics.init();
+            /*Serial.println("motor Positions");
+            Serial.print(kinematics.leftMotorX,8); Serial.print(F(" (left Motor X, mm)\r\n"));
+            Serial.print(kinematics.leftMotorY,8); Serial.print(F(" (left Motor Y, mm)\r\n"));
+            Serial.print(kinematics.rightMotorX,8); Serial.print(F(" (right Motor X, mm)\r\n"));
+            Serial.print(kinematics.rightMotorY,8); Serial.print(F(" (right Motor Y, mm)\r\n"));
+            */
+          }
           return(STATUS_OK);
       }
     }

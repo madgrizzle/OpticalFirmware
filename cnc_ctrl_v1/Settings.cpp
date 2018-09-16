@@ -106,6 +106,7 @@ void settingsReset() {
     sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;
     sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
+    sysSettings.enableOpticalCalibration = false;
 }
 
 void settingsWipe(byte resetType){
@@ -405,6 +406,9 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               break;
         case 42:
               sysSettings.positionErrorLimit = value;
+              break;
+        case 44:
+              sysSettings.enableOpticalCalibration = value;
               break;
         default:
               return(STATUS_INVALID_STATEMENT);
