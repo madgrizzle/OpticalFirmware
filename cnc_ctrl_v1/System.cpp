@@ -567,7 +567,10 @@ byte systemExecuteCmdstring(String& cmdString){
           //         // No break. Continues into default: to read remaining command characters.
           //       }
               case 'O' : // Here's were we can send customized data that doesn't fit the firmwareKey/floating
-                if(!readArrayValue(cmdString, char_counter, _x, _y, xValue, yValue)) {return(STATUS_BAD_NUMBER_FORMAT); }
+                //Serial.println("received");
+                if(!readArrayValue(cmdString, ++char_counter, _x, _y, xValue, yValue)) {return(STATUS_BAD_NUMBER_FORMAT); }
+                if ( (_x==15) && (_y==7) )
+                  Serial.println("parsed");
                 return(calibrationUpdateMatrix(_x, _y, xValue, yValue));
                 break;
               default :  // Storing setting methods [IDLE/ALARM]

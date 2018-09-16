@@ -70,35 +70,36 @@ float readArrayValue(const String& str, byte& index, int& x, int& y, int& xValue
     /*
     Don't mind scientific notation here..  no big whoop
     */
-    //remove any spaces before start of parsing
-    while (str[index] == ' ' && index < str.length()){
+    //remove any spaces or eqals before start of parsing
+    //Serial.println(str);
+    while ( ( (str[index] == ' ') || (str[index] == '=') ) && index < str.length()){
       index++;
     }
     // parse out based upon commands
     // make it easy.. parse xS, parse yS, parse xValueS, parse yValueS
     String xS = "";
-    while ((str[index]<str.length()) && (str[index]!=',') ){
+    while ((index<str.length()) && (str[index]!=',') ){
       xS.concat(str[index]);
       index++;
     }
     index++; // get past the comma
 
     String yS = "";
-    while ((str[index]<str.length()) && (str[index]!=',') ){
+    while ((index<str.length()) && (str[index]!=',') ){
       yS.concat(str[index]);
       index++;
     }
     index++; // get past the comma
 
     String xValueS = "";
-    while ((str[index]<str.length()) && (str[index]!=',') ){
+    while ((index<str.length()) && (str[index]!=',') ){
       xValueS.concat(str[index]);
       index++;
     }
     index++; // get past the comma
 
     String yValueS = "";
-    while ((str[index]<str.length()) && (str[index]!=',') ){
+    while ((index<str.length()) && (str[index]!=',') ){
       yValueS.concat(str[index]);
       index++;
     }

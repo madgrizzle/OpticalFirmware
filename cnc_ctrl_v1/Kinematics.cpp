@@ -28,6 +28,7 @@ Kinematics::Kinematics(){
 }
 
 void Kinematics::init(){
+    Serial.println("Kinematics Initializing:");
     recomputeGeometry();
     if (sys.state != STATE_OLD_SETTINGS){
       forward(leftAxis.read(), rightAxis.read(), &sys.xPosition, &sys.yPosition, sys.xPosition, sys.yPosition);
@@ -41,6 +42,8 @@ void Kinematics::_verifyValidTarget(float* xTarget,float* yTarget){
     *yTarget = (*yTarget < -halfHeight) ? -halfHeight : (*yTarget > halfHeight) ? halfHeight : *yTarget;
 
 }
+
+
 
 void Kinematics::recomputeGeometry(){
     /*
@@ -56,13 +59,27 @@ void Kinematics::recomputeGeometry(){
 
     halfWidth = sysSettings.machineWidth / 2.0;
     halfHeight = sysSettings.machineHeight / 2.0;
-    _xCordOfMotor = sysSettings.distBetweenMotors/2;
-    _yCordOfMotor = halfHeight + sysSettings.motorOffsetY;
+    _xCordOfMotor = sysSettings.distBetweenMotors/2;  //not used anymore
+    _yCordOfMotor = halfHeight + sysSettings.motorOffsetY; //not used anymore
 
-    leftMotorX = cos(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/-2.0;
-    leftMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/-2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0);
-    rightMotorX = cos(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors+leftMotorX;
-    rightMotorY = sin(sysSettings.topBeamTilt*0.0174532925199433)*sysSettings.distBetweenMotors/2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0);
+    float xOffset = (float)calibration.xError[15][7]/1000.0;
+    float yOffset = (float)calibration.yError[15][7]/1000.0;
+
+    Serial.println("recomputing kinematics");
+    Serial.println("xOffset");
+    Serial.print(xOffset);
+    Serial.println(F(" mm"));
+    Serial.println("yOffset");
+    Serial.print(yOffset);
+    Serial.println(F(" mm"));
+
+
+    leftMotorX = cos(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/-2.0 - xOffset;
+    leftMotorY = sin(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/-2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0) - yOffset;
+    rightMotorX = cos(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/2.0 - xOffset;
+    rightMotorY = sin(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0) - yOffset;
+
+    //Serial.println("youve been disconnected");  //uncomment this line if you want a disconnect
 
     leftChainTolerance = sysSettings.distPerRot/sysSettings.distPerRotLeftChainTolerance; //doing it this way only to reduce changes to existing code
     rightChainTolerance = sysSettings.distPerRot/sysSettings.distPerRotRightChainTolerance; //doing it this way only to reduce changes to existing code
@@ -196,6 +213,12 @@ void  Kinematics::quadrilateralInverse(float xTarget,float yTarget, float* aChai
 
 }
 
+void Kinematics::_adjustTarget(float* xTarget,float* yTarget){
+    //If the target point is beyond one of the edges of the board, the machine stops at the edge
+    *xTarget += ((float)(calibration.xError[15][7]-calibration.xError[15][7]))/1000.0;
+    *yTarget += ((float)(calibration.yError[15][7]-calibration.yError[15][7]))/1000.0;
+}
+
 void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
     /*
 
@@ -207,6 +230,11 @@ void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLe
 
     //Confirm that the coordinates are on the wood
     _verifyValidTarget(&xTarget, &yTarget);
+
+    if (sysSettings.enableOpticalCalibration){
+      _adjustTarget(&xTarget, &yTarget);
+      _verifyValidTarget(&xTarget, &yTarget);
+    }
 
     //Set up variables
     float Chain1Angle = 0;

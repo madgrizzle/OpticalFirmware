@@ -42,9 +42,9 @@
             float RrightChainTolerance = 10.1;    // Right sprocket radius including chain tolerance
 
             float leftMotorX = -1800.0;
-            float leftMotorY = -1200.0;
+            float leftMotorY = 1200.0;
             float rightMotorX = 1800.0;
-            float rightMotorY = -1200.0;
+            float rightMotorY = 1200.0;
             float leftChainTolerance = 1;
             float rightChainTolerance = 1;
 
@@ -56,6 +56,7 @@
             void  _MatSolv();
             void  _MyTrig();
             void _verifyValidTarget(float* xTarget,float* yTarget);
+            void _adjustTarget(float* xTarget,float* yTarget);
             //target router bit coordinates.
             float x = 0;
             float y = 0;

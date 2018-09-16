@@ -108,6 +108,7 @@ void settingsReset() {
     sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
     sysSettings.topBeamTilt = 0.0;
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
+    sysSettings.enableOpticalCalibration = false;
 }
 
 void settingsWipe(byte resetType){
@@ -236,11 +237,11 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
                       break;
                 case 2:
                       sysSettings.distBetweenMotors = value;
-                      kinematics.recomputeGeometry();
+                      //#kinematics.recomputeGeometry();
                       break;
                 case 3:
                       sysSettings.motorOffsetY = value;
-                      kinematics.recomputeGeometry();
+                      //kinematics.recomputeGeometry();
                       break;
                 case 4:
                       sysSettings.sledWidth = value;
@@ -405,13 +406,15 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               break;
         case 40:
               sysSettings.distPerRotLeftChainTolerance = value;
-              kinematics.recomputeGeometry();
+              kinematics.init();
+              //kinematics.recomputeGeometry();
               //leftAxis.changePitch(&sysSettings.distPerRotLeftChainTolerance);
               //kinematics.RleftChainTolerance = (sysSettings.distPerRotLeftChainTolerance)/(2.0 * 3.14159);
               break;
         case 41:
               sysSettings.distPerRotRightChainTolerance = value;
-              kinematics.recomputeGeometry();
+              kinematics.init();
+              //kinematics.recomputeGeometry();
               //rightAxis.changePitch(&sysSettings.distPerRotRightChainTolerance);
               //kinematics.RrightChainTolerance = (sysSettings.distPerRotRightChainTolerance)/(2.0 * 3.14159);
               break;
@@ -420,7 +423,11 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               break;
         case 43:
               sysSettings.topBeamTilt = value;
-              kinematics.recomputeGeometry();
+              kinematics.init();
+              //kinematics.recomputeGeometry();
+              break;
+        case 44:
+              sysSettings.enableOpticalCalibration = value;
               break;
         default:
               return(STATUS_INVALID_STATEMENT);

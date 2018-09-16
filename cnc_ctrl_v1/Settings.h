@@ -20,7 +20,7 @@ Copyright 2014-2017 Bar Smith*/
 #ifndef settings_h
 #define settings_h
 
-#define SETTINGSVERSION 5      // The current version of settings, if this doesn't
+#define SETTINGSVERSION 6      // The current version of settings, if this doesn't
                                // match what is in EEPROM then settings on
                                // machine are reset to defaults
 #define EEPROMVALIDDATA 56     // This is just a random byte value that is used
@@ -82,6 +82,7 @@ typedef struct {  // I think this is about ~128 bytes in size if I counted corre
   float distPerRotRightChainTolerance; //repurposing
   float positionErrorLimit;
   float topBeamTilt;  //added for Holey Calibration
+  bool enableOpticalCalibration;
   byte eepromValidData;  // This should always be last, that way if an error
                          // happens in writing, it will not be written and we
 } settings_t;            // will know to reset the settings
