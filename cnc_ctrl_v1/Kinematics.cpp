@@ -65,14 +65,14 @@ void Kinematics::recomputeGeometry(){
     float xOffset = (float)calibration.xError[15][7]/1000.0;
     float yOffset = (float)calibration.yError[15][7]/1000.0;
 
-    Serial.println("recomputing kinematics");
+    /*Serial.println("recomputing kinematics");
     Serial.println("xOffset");
     Serial.print(xOffset);
     Serial.println(F(" mm"));
     Serial.println("yOffset");
     Serial.print(yOffset);
     Serial.println(F(" mm"));
-
+    */
 
     leftMotorX = cos(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/-2.0 - xOffset;
     leftMotorY = sin(sysSettings.topBeamTilt*0.01745)*sysSettings.distBetweenMotors/-2.0 + (sysSettings.motorOffsetY+sysSettings.machineHeight/2.0) - yOffset;
@@ -214,9 +214,52 @@ void  Kinematics::quadrilateralInverse(float xTarget,float yTarget, float* aChai
 }
 
 void Kinematics::_adjustTarget(float* xTarget,float* yTarget){
-    //If the target point is beyond one of the edges of the board, the machine stops at the edge
-    *xTarget += ((float)(calibration.xError[15][7]-calibration.xError[15][7]))/1000.0;
-    *yTarget += ((float)(calibration.yError[15][7]-calibration.yError[15][7]))/1000.0;
+    // shift target to 0,0 being top left corner to match array and convert to inches because array is based on inches.. divide by 3 because array is 3 inches apart and subtact 1 because array starts at 3 inch, 3 inch
+    float x = (*xTarget + sysSettings.machineWidth/2.0)/25.4/3.0-1.0;
+    float y = (sysSettings.machineHeight/2.0 - *yTarget)/25.4/3.0-1.0;
+    // get x1,y1 and x2, y2 for interpolation
+    int x1 = (int)(x);
+    int y1 = (int)(y);
+    int x2 = x1+1;
+    int y2 = y1+1;
+    // limit x1,y1 and x2,y2 within bounds of array, currently 31,15
+    x1 = (x1 < 0) ? 0 : (x1 > 31) ? 31 : x1;
+    y1 = (y1 < 0) ? 0 : (y1 > 15) ? 15 : y1;
+    x2 = (x2 < 0) ? 0 : (x2 > 31) ? 31 : x2;
+    y2 = (y2 < 0) ? 0 : (y2 > 15) ? 15 : y2;
+    //interpolate but catch for divide by zeroes
+    float xOffset = 0.0;
+    float yOffset = 0.0;
+
+    float xR1, xR2, yR1, yR2;
+    if (x2 == x1)
+    {
+       xR1 = (float)calibration.xError[x1][y1];
+       xR2 = (float)calibration.xError[x1][y2];
+       yR1 = (float)calibration.yError[x1][y1];
+       yR2 = (float)calibration.yError[x1][y2];
+    }
+    else
+    {
+       xR1 = (x2 - x) / (x2 - x1) * (float)calibration.xError[x1][y1] + (x - x1) / (x2 - x1) * (float)calibration.xError[x2][y1];
+       xR2 = (x2 - x) / (x2 - x1) * (float)calibration.xError[x1][y2] + (x - x1) / (x2 - x1) * (float)calibration.xError[x2][y2];
+       yR1 = (x2 - x) / (x2 - x1) * (float)calibration.yError[x1][y1] + (x - x1) / (x2 - x1) * (float)calibration.yError[x2][y1];
+       yR2 = (x2 - x) / (x2 - x1) * (float)calibration.yError[x1][y2] + (x - x1) / (x2 - x1) * (float)calibration.yError[x2][y2];
+    }
+
+    if (y2 == y1)
+    {
+       xOffset = (xR1 + xR2) / 2;
+       yOffset = (yR1 + yR2) / 2;
+    }
+    else
+    {
+       xOffset = (y2 - y) / (y2 - y1) * xR1 + (y - y1) / (y2 - y1) * xR2;
+       yOffset = (y2 - y) / (y2 - y1) * yR1 + (y - y1) / (y2 - y1) * yR2;
+    }
+
+    *xTarget += ((float)(xOffset-calibration.xError[15][7]))/1000.0;
+    *yTarget += ((float)(yOffset-calibration.yError[15][7]))/1000.0;
 }
 
 void  Kinematics::triangularInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){

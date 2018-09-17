@@ -546,6 +546,7 @@ byte systemExecuteCmdstring(String& cmdString){
                   case '$': settingsWipe(SETTINGS_RESTORE_SETTINGS); break;
                   case '#': settingsWipe(SETTINGS_RESTORE_MASLOW); break;
                   case '*': settingsWipe(SETTINGS_RESTORE_ALL); break;
+                  case 'O': initializeCalibration(); break;
                   default: return(STATUS_INVALID_STATEMENT);
                 }
                 reportFeedbackMessage(MESSAGE_RESTORE_DEFAULTS);
