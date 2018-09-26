@@ -35,6 +35,7 @@ void settingsLoadFromEEprom(){
     settingsReset(); // Load default values first
     EEPROM.get(300, settingsVersionStruct);
     EEPROM.get(340, tempSettings);
+    EEPROM.get(2048, calibration);  // error check this?
     if (settingsVersionStruct.settingsVersion == SETTINGSVERSION &&
         settingsVersionStruct.eepromValidData == EEPROMVALIDDATA &&
         tempSettings.eepromValidData == EEPROMVALIDDATA){
@@ -43,6 +44,8 @@ void settingsLoadFromEEprom(){
     else {
       reportStatusMessage(STATUS_SETTING_READ_FAIL);
     }
+
+
 
     // Apply settings
     setPWMPrescalers(int(sysSettings.fPWM));
@@ -107,6 +110,7 @@ void settingsReset() {
     sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
     sysSettings.enableOpticalCalibration = false;
+    initializeCalibration();
 }
 
 void settingsWipe(byte resetType){
@@ -124,6 +128,13 @@ void settingsWipe(byte resetType){
       EEPROM.write(i, 0);
     }
   }
+  else if (bit_istrue(resetType, SETTINGS_RESTORE_CALIBRATION)){
+    for (size_t i = 2048 ; i < sizeof(calibration) + 2048; i++) {
+      EEPROM.write(i, 0);
+    }
+    initializeCalibration();
+  }
+
   else if (bit_istrue(resetType, SETTINGS_RESTORE_ALL)){
     for (size_t i = 0 ; i < EEPROM.length() ; i++) {
       EEPROM.write(i, 0);
@@ -140,6 +151,7 @@ void settingsSaveToEEprom(){
     settingsVersion_t settingsVersionStruct = {SETTINGSVERSION, EEPROMVALIDDATA};
     EEPROM.put(300, settingsVersionStruct);
     EEPROM.put(340, sysSettings);
+    EEPROM.put(2048, calibration);
 }
 
 void settingsSaveStepstoEEprom(){

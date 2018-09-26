@@ -226,7 +226,9 @@ void reportMaslowSettings() {
     Serial.print(F(" (PWM frequency value 1=39,000Hz, 2=4,100Hz, 3=490Hz)\r\n$40=")); Serial.print(sysSettings.leftChainTolerance, 8);
     Serial.print(F(" (chain tolerance, left chain, mm)\r\n$41=")); Serial.print(sysSettings.rightChainTolerance, 8);
     Serial.print(F(" (chain tolerance, right chain, mm)\r\n$42=")); Serial.print(sysSettings.positionErrorLimit, 8);
-    Serial.print(F(" (position error alarm limit, mm)"));
+    Serial.print(F(" (position error alarm limit, mm)")); Serial.print(calibration.xError[15][7]);
+    Serial.print(F(" (Center X Error, mm)\r\n")); Serial.print(calibration.yError[15][7]);
+    Serial.print(F(" (Center Y Error, mm)\r\n"));
     Serial.println();
   #endif
 }

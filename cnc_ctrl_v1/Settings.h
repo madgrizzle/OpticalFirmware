@@ -31,6 +31,7 @@ Copyright 2014-2017 Bar Smith*/
 #define SETTINGS_RESTORE_SETTINGS bit(0)
 #define SETTINGS_RESTORE_MASLOW bit(1)
 #define SETTINGS_RESTORE_ALL bit(2)
+#define SETTINGS_RESTORE_CALIBRATION bit(3)
 
 enum SpindleAutomationType {
   NONE,
