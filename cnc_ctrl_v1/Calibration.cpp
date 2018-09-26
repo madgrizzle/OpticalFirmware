@@ -27,6 +27,7 @@ void initializeCalibration(){
     /*
     initializes the data to zero
     */
+    Serial.print(F(" Zeroing Calibration\r\n"));
     for (int x=0; x<31; x++){
       for (int y=0; y<15; y++){
         calibration.xError[x][y]=0;
@@ -38,6 +39,13 @@ void initializeCalibration(){
 }
 
 byte calibrationUpdateMatrix(int _x, int _y, int xValue, int yValue) {
+  if ( (_x==31) && (_y==15) )
+  {
+    settingsSaveToEEprom();
+    return(STATUS_OK);
+  }
+  else
+  {
     if ( (_x>=0) && (_x<31) ) {
       if ( (_y>=0) && (_y<15) ){
           calibration.xError[_x][_y]=xValue;
@@ -55,4 +63,5 @@ byte calibrationUpdateMatrix(int _x, int _y, int xValue, int yValue) {
       }
     }
     return(STATUS_INVALID_STATEMENT);
+  }
 }

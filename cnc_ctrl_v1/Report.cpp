@@ -234,7 +234,9 @@ void reportMaslowSettings() {
     Serial.print(F(" (left Motor X, mm)\r\n")); Serial.print(kinematics.leftMotorY,8);
     Serial.print(F(" (left Motor Y, mm)\r\n")); Serial.print(kinematics.rightMotorX,8);
     Serial.print(F(" (right Motor X, mm)\r\n")); Serial.print(kinematics.rightMotorY,8);
-    Serial.print(F(" (right Motor Y, mm)\r\n"));
+    Serial.print(F(" (right Motor Y, mm)\r\n")); Serial.print(calibration.xError[15][7]);
+    Serial.print(F(" (Center X Error, mm)\r\n")); Serial.print(calibration.yError[15][7]);
+    Serial.print(F(" (Center Y Error, mm)\r\n"));
     Serial.println();
   #endif
 }

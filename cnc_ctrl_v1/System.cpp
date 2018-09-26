@@ -546,7 +546,7 @@ byte systemExecuteCmdstring(String& cmdString){
                   case '$': settingsWipe(SETTINGS_RESTORE_SETTINGS); break;
                   case '#': settingsWipe(SETTINGS_RESTORE_MASLOW); break;
                   case '*': settingsWipe(SETTINGS_RESTORE_ALL); break;
-                  case 'O': initializeCalibration(); break;
+                  case '^': settingsWipe(SETTINGS_RESTORE_CALIBRATION); break;
                   default: return(STATUS_INVALID_STATEMENT);
                 }
                 reportFeedbackMessage(MESSAGE_RESTORE_DEFAULTS);
@@ -570,8 +570,6 @@ byte systemExecuteCmdstring(String& cmdString){
               case 'O' : // Here's were we can send customized data that doesn't fit the firmwareKey/floating
                 //Serial.println("received");
                 if(!readArrayValue(cmdString, ++char_counter, _x, _y, xValue, yValue)) {return(STATUS_BAD_NUMBER_FORMAT); }
-                if ( (_x==15) && (_y==7) )
-                  Serial.println("parsed");
                 return(calibrationUpdateMatrix(_x, _y, xValue, yValue));
                 break;
               default :  // Storing setting methods [IDLE/ALARM]
