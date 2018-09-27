@@ -83,6 +83,19 @@ typedef struct {  // I think this is about ~128 bytes in size if I counted corre
   float rightChainTolerance;
   float positionErrorLimit;
   bool enableOpticalCalibration;
+  bool useInterpolationOrCurve;
+  float calX0; //look ma, using the same names as gc does!
+  float calX1;
+  float calX2;
+  float calX3;
+  float calX4;
+  float calX5;
+  float calY0;
+  float calY1;
+  float calY2;
+  float calY3;
+  float calY4;
+  float calY5;
   byte eepromValidData;  // This should always be last, that way if an error
                          // happens in writing, it will not be written and we
 } settings_t;            // will know to reset the settings
