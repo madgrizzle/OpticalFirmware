@@ -269,8 +269,8 @@ void Kinematics::_adjustTarget(float* xTarget,float* yTarget){
     else
     {
       //use curvefitting
-      *xTarget += sysSettings.calX4*xTarget*xTarget + sysSettings.calX5*yTarget*yTarget + sysSettings.calX3*xTarget*yTarget + sysSettings.calX1*xTarget + sysSettings.calX2*yTarget + sysSettings.calX0
-      *yTarget += sysSettings.calY4*xTarget*xTarget + sysSettings.calY5*yTarget*yTarget + sysSettings.calY3*xTarget*yTarget + sysSettings.calY1*xTarget + sysSettings.calY2*yTarget + sysSettings.calY0
+      *xTarget += sysSettings.calX4*xTarget*xTarget + sysSettings.calX5*yTarget*yTarget + sysSettings.calX3*xTarget*yTarget + sysSettings.calX1*xTarget + sysSettings.calX2*yTarget + sysSettings.calX0;
+      *yTarget += sysSettings.calY4*xTarget*xTarget + sysSettings.calY5*yTarget*yTarget + sysSettings.calY3*xTarget*yTarget + sysSettings.calY1*xTarget + sysSettings.calY2*yTarget + sysSettings.calY0;
     }
 }
 
