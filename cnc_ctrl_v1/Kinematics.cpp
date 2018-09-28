@@ -62,9 +62,12 @@ void Kinematics::recomputeGeometry(){
     _xCordOfMotor = sysSettings.distBetweenMotors/2;  //not used anymore
     _yCordOfMotor = halfHeight + sysSettings.motorOffsetY; //not used anymore
 
-    float xOffset = (float)calibration.xError[15][7]/1000.0;
-    float yOffset = (float)calibration.yError[15][7]/1000.0;
-
+    float xOffset = 0.0;
+    float yOffset = 0.0;
+    if (sysSettings.enableOpticalCalibration==true){
+      xOffset = (float)calibration.xError[15][7]/1000.0;
+      yOffset = (float)calibration.yError[15][7]/1000.0;
+    }
     /*Serial.println("recomputing kinematics");
     Serial.println("xOffset");
     Serial.print(xOffset);
