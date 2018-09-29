@@ -65,8 +65,14 @@ void Kinematics::recomputeGeometry(){
     float xOffset = 0.0;
     float yOffset = 0.0;
     if (sysSettings.enableOpticalCalibration==true){
-      xOffset = (float)calibration.xError[15][7]/1000.0;
-      yOffset = (float)calibration.yError[15][7]/1000.0;
+      if (sysSettings.useInterpolationOrCurve==true){
+        xOffset = (float)calibration.xError[15][7]/1000.0;
+        yOffset = (float)calibration.yError[15][7]/1000.0;
+      }
+      else {
+        xOffset = (float)sysSettings.calX0;
+        yOffset = (float)sysSettings.calY0;
+      }
     }
     /*Serial.println("recomputing kinematics");
     Serial.println("xOffset");
@@ -271,8 +277,9 @@ void Kinematics::_adjustTarget(float* xTarget,float* yTarget){
       //use curvefitting
       float xT = *xTarget;
       float yT = *yTarget;
-      *xTarget += sysSettings.calX4*xT*xT + sysSettings.calX5*yT*yT + sysSettings.calX3*xT*yT + sysSettings.calX1*xT + sysSettings.calX2*yT + sysSettings.calX0;
-      *yTarget += sysSettings.calY4*xT*xT + sysSettings.calY5*yT*yT + sysSettings.calY3*xT*yT + sysSettings.calY1*xT + sysSettings.calY2*yT + sysSettings.calY0;
+      // I removed the constant term because I adjust center by that amount. I would have just had to subtract it out if I had left it in.
+      *xTarget += sysSettings.calX4*xT*xT + sysSettings.calX5*yT*yT + sysSettings.calX3*xT*yT + sysSettings.calX1*xT + sysSettings.calX2*yT;  
+      *yTarget += sysSettings.calY4*xT*xT + sysSettings.calY5*yT*yT + sysSettings.calY3*xT*yT + sysSettings.calY1*xT + sysSettings.calY2*yT;
     }
 }
 
