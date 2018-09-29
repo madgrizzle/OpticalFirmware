@@ -118,6 +118,8 @@ float readArrayValue(const String& str, byte& index, int& x, int& y, int& xValue
 
 float readFullFloat(const String& str, byte& index, float& retVal){
 
-    retVal = str.substring(index).trim().toFloat();
+    String sub = str.substring(index);
+    sub.trim();
+    retVal = sub.toFloat();
     return true;
 }

@@ -27,6 +27,7 @@ Copyright 2014-2017 Bar Smith*/
 #define bit_isfalse(x,mask) ((x & mask) == 0)
 
 float readFloat(const String&, byte&, float&);
+float readFullFloat(const String&, byte&, float&);
 
 float readArrayValue(const String&, byte&, int&, int&, int&, int&);
 
