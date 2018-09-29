@@ -498,7 +498,7 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
                       break;
            }
            kinematics.init();
-
+           break;
         default:
               return(STATUS_INVALID_STATEMENT);
     }

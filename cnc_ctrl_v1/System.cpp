@@ -594,8 +594,8 @@ byte systemExecuteCmdstring(String& cmdString){
                   }
                   else {
                     if(!readFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT); }
+                    if((cmdString[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
                   }
-                  if((cmdString[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
                   return(settingsStoreGlobalSetting((byte)parameter, value));
                 // }
             }
