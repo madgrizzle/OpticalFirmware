@@ -589,7 +589,12 @@ byte systemExecuteCmdstring(String& cmdString){
                 //     settings_store_startup_line(helper_var,line);
                 //   }
                 // } else { // Store global setting.
-                  if(!readFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT); }
+                  if ((parameter>=47) && (parameter<=58)) {
+                    if (!readFullFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT);}
+                  }
+                  else {
+                    if(!readFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT); }
+                  }
                   if((cmdString[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
                   return(settingsStoreGlobalSetting((byte)parameter, value));
                 // }

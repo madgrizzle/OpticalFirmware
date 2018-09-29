@@ -114,3 +114,10 @@ float readArrayValue(const String& str, byte& index, int& x, int& y, int& xValue
 
     return true;
 }
+
+
+float readFullFloat(const String& str, byte& index, float& retVal){
+
+    retVal = str.substring(index).trim().toFloat();
+    return true;
+}
