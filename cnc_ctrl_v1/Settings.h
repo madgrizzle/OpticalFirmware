@@ -84,7 +84,7 @@ typedef struct {  // I think this is about ~128 bytes in size if I counted corre
   float positionErrorLimit;
   bool enableOpticalCalibration;
   bool useInterpolationOrCurve;
-  float calX0; //look ma, using the same names as gc does!
+  float calX0;
   float calX1;
   float calX2;
   float calX3;

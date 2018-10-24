@@ -45,8 +45,6 @@ void settingsLoadFromEEprom(){
       reportStatusMessage(STATUS_SETTING_READ_FAIL);
     }
 
-
-
     // Apply settings
     setPWMPrescalers(int(sysSettings.fPWM));
     kinematics.recomputeGeometry();
@@ -148,7 +146,6 @@ void settingsWipe(byte resetType){
     }
     initializeCalibration();
   }
-
   else if (bit_istrue(resetType, SETTINGS_RESTORE_ALL)){
     for (size_t i = 0 ; i < EEPROM.length() ; i++) {
       EEPROM.write(i, 0);

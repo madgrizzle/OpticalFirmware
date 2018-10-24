@@ -78,13 +78,11 @@ int   coordinatedMove(const float& xEnd, const float& yEnd, const float& zEnd, f
     direction, the tool moves to the target in a straight line. This function is used by the G00
     and G01 commands. The units at this point should all be in mm or mm per minute*/
     if (sysSettings.enableOpticalCalibration){
-      if (sysSettings.useInterpolationOrCurve) {
-        Serial.println("move adjusted by interpolation");
-      }
-      else {
-        Serial.println("move adjusted by curve");
-      }
-
+        if (sysSettings.useInterpolationOrCurve) {
+            Serial.println("move adjusted by interpolation");
+        } else {
+            Serial.println("move adjusted by curve");
+        }
     }
 
     float  xStartingLocation = sys.xPosition;
@@ -195,24 +193,10 @@ void  singleAxisMove(Axis* axis, const float& endPos, const float& MMPerMin){
 
     float stepSizeMM           = computeStepSize(MMPerMin);                    //step size in mm
 
-
     //the argument to abs should only be a variable -- splitting calc into 2 lines
     long finalNumberOfSteps    = abs(moveDist/stepSizeMM);      //number of steps taken in move
     finalNumberOfSteps = abs(finalNumberOfSteps);
     stepSizeMM = stepSizeMM*direction;
-
-
-    Serial.print(endPos,8);
-    Serial.println(F("mm"));
-    Serial.print(MMPerMin,8);
-    Serial.println(F("mm"));
-    Serial.print(moveDist,8);
-    Serial.println(F("mm"));
-    Serial.print(finalNumberOfSteps);
-    Serial.println(F("steps"));
-    Serial.print(stepSizeMM,8);
-    Serial.println(F("mmpermin"));
-
 
     long numberOfStepsTaken    = 0;
 

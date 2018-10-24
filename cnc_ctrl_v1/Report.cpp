@@ -197,7 +197,6 @@ void reportMaslowSettings() {
     Serial.print(F("$57=")); Serial.println(sysSettings.calY4, 8);
     Serial.print(F("$58=")); Serial.println(sysSettings.calY5, 8);
     
-
   #else
     Serial.print(F("$0=")); Serial.print(sysSettings.machineWidth);
     Serial.print(F(" (machine width, mm)\r\n$1=")); Serial.print(sysSettings.machineHeight, 8);
