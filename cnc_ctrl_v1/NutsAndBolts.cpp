@@ -22,11 +22,11 @@ Copyright 2014-2017 Bar Smith*/
 float readFloat(const String& str, byte& index, float& retVal){
     /*
     Takes a string and a starting character index and returns a float if it can
-    be parsed from the string, it will skip leading spaces.  Does not support
-    scientific notation as this is officially not supported by GCode.
-    Code was adopted from arduino Stream::parseFloat and some from Grbl's
-    read_float.  It is a custom function because all arduino and c++ functions
-    appear to handle scientific notation or hexadecimal notation, or some other
+    be parsed from the string, it will skip leading spaces.  Does not support 
+    scientific notation as this is officially not supported by GCode.  
+    Code was adopted from arduino Stream::parseFloat and some from Grbl's 
+    read_float.  It is a custom function because all arduino and c++ functions 
+    appear to handle scientific notation or hexadecimal notation, or some other 
     type of numerical representation that we don't want supported.
     */
     bool isNegative = false;
