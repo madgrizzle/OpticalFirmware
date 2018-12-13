@@ -21,12 +21,12 @@ Copyright 2014-2017 Bar Smith*/
 
 void  reportStatusMessage(byte status_code){
     /*
-    
+
     Sends confirmation protocol response for commands. For every incoming line,
     this method responds with an 'ok' for a successful command or an 'error:'
     to indicate some error event with the line or some critical system error during
     operation.
-    
+
     Taken from Grbl http://github.com/grbl/grbl
     */
     if (status_code == 0) { // STATUS_OK
@@ -185,19 +185,32 @@ void reportMaslowSettings() {
     Serial.print(F("$43=")); Serial.println(sysSettings.topBeamTilt, 8);
     Serial.print(F("$44=")); Serial.println(sysSettings.enableOpticalCalibration, 8);
     Serial.print(F("$46=")); Serial.println(sysSettings.useInterpolationOrCurve, 8);
-    Serial.print(F("$47=")); Serial.println(sysSettings.calX0, 8);
-    Serial.print(F("$48=")); Serial.println(sysSettings.calX1, 8);
-    Serial.print(F("$49=")); Serial.println(sysSettings.calX2, 8);
-    Serial.print(F("$50=")); Serial.println(sysSettings.calX3, 8);
-    Serial.print(F("$51=")); Serial.println(sysSettings.calX4, 8);
-    Serial.print(F("$52=")); Serial.println(sysSettings.calX5, 8);
-    Serial.print(F("$53=")); Serial.println(sysSettings.calY0, 8);
-    Serial.print(F("$54=")); Serial.println(sysSettings.calY1, 8);
-    Serial.print(F("$55=")); Serial.println(sysSettings.calY2, 8);
-    Serial.print(F("$56=")); Serial.println(sysSettings.calY3, 8);
-    Serial.print(F("$57=")); Serial.println(sysSettings.calY4, 8);
-    Serial.print(F("$58=")); Serial.println(sysSettings.calY5, 8);
-    
+    char buffer[30];
+    dtostre(sysSettings.calX0, buffer, 5, NULL);
+    Serial.print(F("$47=")); Serial.println(buffer);
+    dtostre(sysSettings.calX1, buffer, 5, NULL);
+    Serial.print(F("$48=")); Serial.println(buffer);
+    dtostre(sysSettings.calX2, buffer, 5, NULL);
+    Serial.print(F("$49=")); Serial.println(buffer);
+    dtostre(sysSettings.calX3, buffer, 5, NULL);
+    Serial.print(F("$50=")); Serial.println(buffer);
+    dtostre(sysSettings.calX4, buffer, 5, NULL);
+    Serial.print(F("$51=")); Serial.println(buffer);
+    dtostre(sysSettings.calX5, buffer, 5, NULL);
+    Serial.print(F("$52=")); Serial.println(buffer);
+    dtostre(sysSettings.calY0, buffer, 5, NULL);
+    Serial.print(F("$53=")); Serial.println(buffer);
+    dtostre(sysSettings.calY1, buffer, 5, NULL);
+    Serial.print(F("$54=")); Serial.println(buffer);
+    dtostre(sysSettings.calY2, buffer, 5, NULL);
+    Serial.print(F("$55=")); Serial.println(buffer);
+    dtostre(sysSettings.calY3, buffer, 5, NULL);
+    Serial.print(F("$56=")); Serial.println(buffer);
+    dtostre(sysSettings.calY4, buffer, 5, NULL);
+    Serial.print(F("$57=")); Serial.println(buffer);
+    dtostre(sysSettings.calY5, buffer, 5, NULL);
+    Serial.print(F("$58=")); Serial.println(buffer);
+
   #else
     Serial.print(F("$0=")); Serial.print(sysSettings.machineWidth);
     Serial.print(F(" (machine width, mm)\r\n$1=")); Serial.print(sysSettings.machineHeight, 8);
@@ -250,18 +263,31 @@ void reportMaslowSettings() {
     Serial.print(F(" (Center X Error, mm)\r\n")); Serial.print(calibration.yError[15][7]);
     Serial.print(F(" (Center Y Error, mm)\r\n$44=")); Serial.print(sysSettings.enableOpticalCalibration);
     Serial.print(F(" (enable calibration)\r\n$46=")); Serial.print(sysSettings.useInterpolationOrCurve);
-    Serial.print(F(" (use interp or curve)\r\n$47=")); Serial.print(sysSettings.calX0);
-    Serial.print(F(" (calX0)\r\n$48=")); Serial.print(sysSettings.calX1,8);
-    Serial.print(F(" (calX1)\r\n$49=")); Serial.print(sysSettings.calX2,8);
-    Serial.print(F(" (calX2)\r\n$50=")); Serial.print(sysSettings.calX3,8);
-    Serial.print(F(" (calX3)\r\n$51=")); Serial.print(sysSettings.calX4,8);
-    Serial.print(F(" (calX4)\r\n$52=")); Serial.print(sysSettings.calX5,8);
-    Serial.print(F(" (calX5)\r\n$53=")); Serial.print(sysSettings.calY0,8);
-    Serial.print(F(" (calY0)\r\n$54=")); Serial.print(sysSettings.calY1,8);
-    Serial.print(F(" (calY1)\r\n$55=")); Serial.print(sysSettings.calY2,8);
-    Serial.print(F(" (calY2)\r\n$56=")); Serial.print(sysSettings.calY3,8);
-    Serial.print(F(" (calY3)\r\n$57=")); Serial.print(sysSettings.calY4,8);
-    Serial.print(F(" (calY4)\r\n$58=")); Serial.print(sysSettings.calY5,8);
+    char buffer[30];
+    dtostre(sysSettings.calX0, buffer, 5, NULL);
+    Serial.print(F(" (use interp or curve)\r\n$47=")); Serial.print(buffer);
+    dtostre(sysSettings.calX1, buffer, 5, NULL);
+    Serial.print(F(" (calX0)\r\n$48=")); Serial.print(buffer);
+    dtostre(sysSettings.calX2, buffer, 5, NULL);
+    Serial.print(F(" (calX1)\r\n$49=")); Serial.print(buffer);
+    dtostre(sysSettings.calX3, buffer, 5, NULL);
+    Serial.print(F(" (calX2)\r\n$50=")); Serial.print(buffer);
+    dtostre(sysSettings.calX4, buffer, 5, NULL);
+    Serial.print(F(" (calX3)\r\n$51=")); Serial.print(buffer);
+    dtostre(sysSettings.calX5, buffer, 5, NULL);
+    Serial.print(F(" (calX4)\r\n$52=")); Serial.print(buffer);
+    dtostre(sysSettings.calY0, buffer, 5, NULL);
+    Serial.print(F(" (calX5)\r\n$53=")); Serial.print(buffer);
+    dtostre(sysSettings.calY1, buffer, 5, NULL);
+    Serial.print(F(" (calY0)\r\n$54=")); Serial.print(buffer);
+    dtostre(sysSettings.calY2, buffer, 5, NULL);
+    Serial.print(F(" (calY1)\r\n$55=")); Serial.print(buffer);
+    dtostre(sysSettings.calY3, buffer, 5, NULL);
+    Serial.print(F(" (calY2)\r\n$56=")); Serial.print(buffer);
+    dtostre(sysSettings.calY4, buffer, 5, NULL);
+    Serial.print(F(" (calY3)\r\n$57=")); Serial.print(buffer);
+    dtostre(sysSettings.calY5, buffer, 5, NULL);
+    Serial.print(F(" (calY4)\r\n$58=")); Serial.print(buffer);
     Serial.print(F(" (calY5)"));
     Serial.println();
   #endif
@@ -269,7 +295,7 @@ void reportMaslowSettings() {
 
 void  returnError(){
     /*
-    Prints the machine's positional error and the amount of space available in the 
+    Prints the machine's positional error and the amount of space available in the
     gcode buffer
     */
         Serial.print(F("[PE:"));
@@ -291,15 +317,15 @@ void  returnError(){
 void  returnPoz(){
     /*
     Causes the machine's position (x,y) to be sent over the serial connection updated on the UI
-    in Ground Control. Also causes the error report to be sent. Only executes 
+    in Ground Control. Also causes the error report to be sent. Only executes
     if hasn't been called in at least POSITIONTIMEOUT ms.
     */
-    
+
     static unsigned long lastRan = millis();
-    
+
     if (millis() - lastRan > POSITIONTIMEOUT){
-        
-        
+
+
         Serial.print(F("<"));
         if (sys.stop){
             Serial.print(F("Stop,MPos:"));
@@ -316,13 +342,13 @@ void  returnPoz(){
         Serial.print(F(","));
         Serial.print(zAxis.read()/sys.inchesToMMConversion);
         Serial.println(F(",WPos:0.000,0.000,0.000>"));
-        
-        
+
+
         returnError();
-        
+
         lastRan = millis();
     }
-    
+
 }
 
 void  reportMaslowHelp(){
