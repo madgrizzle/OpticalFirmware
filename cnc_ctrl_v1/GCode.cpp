@@ -19,6 +19,7 @@ Copyright 2014-2017 Bar Smith*/
 // commands
 
 #include "Maslow.h"
+#include <EEPROM.h>
 
 maslowRingBuffer incSerialBuffer;
 String readyCommandString = "";  //KRK why is this a global?
@@ -367,7 +368,23 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         return STATUS_OK;
     }
-    return STATUS_INVALID_STATEMENT;
+
+     if(gcodeLine.substring(0, 3) == "B99"){
+         if (gcodeLine.indexOf('1') != -1){
+           EEPROM[ FAKE_SERVO ] = 1;
+           FAKE_SERVO_STATE = 1;
+         } else {
+           EEPROM[ FAKE_SERVO ] = 0;
+           FAKE_SERVO_STATE = 0;
+         }
+         if (FAKE_SERVO_STATE == 0) {
+           Serial.println(F("FAKE_SERVO off"));
+         } else {
+           Serial.println(F("FAKE_SERVO on"));
+         }
+        return(STATUS_OK);
+     }
+   return STATUS_INVALID_STATEMENT;
 }
 
 void  executeGcodeLine(const String& gcodeLine){
