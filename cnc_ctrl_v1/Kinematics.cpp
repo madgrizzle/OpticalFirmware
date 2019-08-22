@@ -53,7 +53,7 @@ void Kinematics::recomputeGeometry(){
     Theta = atan(2*sysSettings.sledHeight/sysSettings.sledWidth);
     Psi1 = Theta - Phi;
     Psi2 = Theta + Phi;
-  
+
     halfWidth = sysSettings.machineWidth / 2.0;
     halfHeight = sysSettings.machineHeight / 2.0;
     _xCordOfMotor = sysSettings.distBetweenMotors/2;
@@ -63,27 +63,27 @@ void Kinematics::recomputeGeometry(){
 
 void  Kinematics::inverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
     /*
-    
-    This function works as a switch to call either the quadrilateralInverse kinematic function 
+
+    This function works as a switch to call either the quadrilateralInverse kinematic function
     or the triangularInverse kinematic function
-    
+
     */
-    
+
     //Confirm that the coordinates are on the wood
     _verifyValidTarget(&xTarget, &yTarget);
-    
+
     _inverse(xTarget,yTarget,aChainLength,bChainLength);
-    
+
 }
 
 void  Kinematics::_inverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
     /*
-    
-    This function works as a switch to call either the quadrilateralInverse kinematic function 
+
+    This function works as a switch to call either the quadrilateralInverse kinematic function
     or the triangularInverse kinematic function
-    
+
     */
-    
+
     if(sysSettings.kinematicsType == 1){
         _quadrilateralInverse(xTarget, yTarget, aChainLength, bChainLength);
     }
@@ -93,7 +93,7 @@ void  Kinematics::_inverse(float xTarget,float yTarget, float* aChainLength, flo
         else
           _triangularInverse(xTarget, yTarget, aChainLength, bChainLength);
     }
-    
+
 }
 
 void  Kinematics::_quadrilateralInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
@@ -206,13 +206,13 @@ void  Kinematics::_quadrilateralInverse(float xTarget,float yTarget, float* aCha
 
 void  Kinematics::_oldTriangularInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
     /*
-    
+
     The inverse kinematics (relating an xy coordinate pair to the required chain lengths to hit that point)
-    function for a triangular set up where the chains meet at a point, or are arranged so that they simulate 
+    function for a triangular set up where the chains meet at a point, or are arranged so that they simulate
     meeting at a point.
-    
+
     */
-    
+
     //Confirm that the coordinates are on the wood
     _verifyValidTarget(&xTarget, &yTarget);
 
@@ -257,7 +257,7 @@ void  Kinematics::_oldTriangularInverse(float xTarget,float yTarget, float* aCha
     //Subtract of the virtual length which is added to the chain by the rotation mechanism
     Chain1 = Chain1 - sysSettings.rotationDiskRadius;
     Chain2 = Chain2 - sysSettings.rotationDiskRadius;
-    
+
     *aChainLength = Chain1;
     *bChainLength = Chain2;
 }
@@ -265,11 +265,11 @@ void  Kinematics::_oldTriangularInverse(float xTarget,float yTarget, float* aCha
 
 void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
     /*
-    
+
     The inverse kinematics (relating an xy coordinate pair to the required chain lengths to hit that point)
-    function for a triangular set up where the chains meet at a point, or are arranged so that they simulate 
+    function for a triangular set up where the chains meet at a point, or are arranged so that they simulate
     meeting at a point.
-    
+
     */
 
     //Set up variables
@@ -294,7 +294,7 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
 
         Chain1AroundSprocket = R * Chain1Angle;
         Chain2AroundSprocket = R * Chain2Angle;
-        
+
         xTangent1=-1.0*_xCordOfMotor+R*sin(Chain1Angle);
         yTangent1=_yCordOfMotor+R*cos(Chain1Angle);
 
@@ -307,7 +307,7 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
 
         Chain1AroundSprocket = R * (3.14159 - Chain1Angle);
         Chain2AroundSprocket = R * (3.14159 - Chain2Angle);
-        
+
         xTangent1=-1.0*_xCordOfMotor-R*sin(Chain1Angle);
         yTangent1=_yCordOfMotor-R*cos(Chain1Angle);
 
@@ -318,7 +318,7 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
     float sledWeight = sysSettings.sledWeight; //Newtons
     float chainDensity = 0.14*9.8/1000; // N/mm
     float chainElasticity = sysSettings.chainElongationFactor; // mm/mm/Newton typically between 5x10E-6 and 8 x10E-6
-    
+
     //Calculate the straight chain length from the sprocket to the bit
     float Chain1Straight = sqrt(pow(Motor1Distance,2)-pow(R,2));
     float Chain2Straight = sqrt(pow(Motor2Distance,2)-pow(R,2));
@@ -328,15 +328,15 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
 
     //    TensionDenominator= d(x_l       y_r-      x_r       y_l-      x_l      y_t     +x_t    y_l      +x_r       y_t    -x_t     y_r)
     float TensionDenominator= (xTangent1*yTangent2-xTangent2*yTangent1-xTangent1*yTarget+xTarget*yTangent1+xTangent2*yTarget-xTarget*yTangent2);
-    
+
     //      T_l     = -(w         *sqrt(pow(x_l      -x_t    ,2.0)+pow(y_l      -y_t    ,2.0)) (x_r      -x_t))    /TensionDenominator
     float Tension1 = - (totalWeight*sqrt(pow(xTangent1-xTarget,2.0)+pow(yTangent1-yTarget,2.0))*(xTangent2-xTarget))/TensionDenominator;
 
     //     T_r     = (w         *sqrt(pow(x_r      -x_t    ,2.0)+pow(y_r      -y_t    ,2.0)) (x_l      -x_t))/(x_ly_r-x_ry_l-x_ly_t+x_ty_l+x_ry_t-x_ty_r)
     float Tension2 = (totalWeight*sqrt(pow(xTangent2-xTarget,2.0)+pow(yTangent2-yTarget,2.0))*(xTangent1-xTarget))/TensionDenominator;
-    
+
     float HorizontalTension=Tension1*(xTarget-xTangent1)/Chain1Straight;
-    
+
     //Calculation of horizontal component of tension for two chains should be equal, as validation step
     //HorizontalTension1=Tension1*(xTarget-xTangent1)/Chain1Straight;
     //HorizontalTension2=Tension2*(xTangent2-xTarget)/Chain2Straight;
@@ -346,11 +346,11 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
 
     float a1=HorizontalTension/chainDensity;
     float a2=HorizontalTension/chainDensity;
-    
+
     //Catenary Equation, total chain length excluding sprocket geometry, chain tolerance, and chain elasticity
     float Chain1=sqrt(pow(2*a1*sinh((xTarget-xTangent1)/(2*a1)),2)+pow(yTangent1-yTarget,2));
     float Chain2=sqrt(pow(2*a2*sinh((xTangent2-xTarget)/(2*a2)),2)+pow(yTangent2-yTarget,2));
-    
+
     //Calculate total chain lengths accounting for sprocket geometry, chain tolerance, and chain elasticity
     Chain1=Chain1AroundSprocket + Chain1/(1.0f+sysSettings.leftChainTolerance/100.0f)/(1.0f+Tension1*chainElasticity);
     Chain2=Chain2AroundSprocket + Chain2/(1.0f+sysSettings.rightChainTolerance/100.0f)/(1.0f+Tension2*chainElasticity);
@@ -358,15 +358,15 @@ void  Kinematics::_triangularInverse(float xTarget,float yTarget, float* aChainL
     //Subtract of the virtual length which is added to the chain by the rotation mechanism
     Chain1 = Chain1 - sysSettings.rotationDiskRadius;
     Chain2 = Chain2 - sysSettings.rotationDiskRadius;
-    
+
     *aChainLength = Chain1;
     *bChainLength = Chain2;
 }
 
 void  Kinematics::forward(const float& chainALength, const float& chainBLength, float* xPos, float* yPos, float xGuess, float yGuess){
-  
+
     Serial.println(F("[Forward Calculating Position]"));
-    
+
 
     float guessLengthA;
     float guessLengthB;
@@ -386,10 +386,10 @@ void  Kinematics::forward(const float& chainALength, const float& chainBLength, 
         //adjust the guess based on the result
         xGuess = xGuess + .1*aChainError - .1*bChainError;
         yGuess = yGuess - .1*aChainError - .1*bChainError;
-        
+
         guessCount++;
 
-        #if defined (KINEMATICSDBG) && KINEMATICSDBG > 0 
+        #if defined (KINEMATICSDBG) && KINEMATICSDBG > 0
           Serial.print(F("[PEk:"));
           Serial.print(aChainError);
           Serial.print(',');

@@ -51,14 +51,14 @@ void readSerialCommands(){
                 quickCommandFlag = true;
                 bit_false(sys.pause, PAUSE_FLAG_USER_PAUSE);
                 sys.writeStepsToEEPROM = true;
-                // report the command 
+                // report the command
                 Serial.println(F("\n\nsoft reset commanded\n\n"));
                 // mimic the firmware reset response sequence so GC thinks we've just reset
                 Serial.print(F("\nPCB v1."));
                 Serial.print(getPCBVersion());
                 if (TLE5206 == true) { Serial.print(F(" TLE5206 ")); }
                 Serial.println(F(" Detected"));
-                Serial.println(F("Grbl v1.00"));  
+                Serial.println(F("Grbl v1.00"));
                 Serial.println(F("ready"));
                 reportStatusMessage(STATUS_OK);
             }
@@ -185,10 +185,10 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         //clear the flag, re-enable position error limit
         bit_false(sys.state,STATE_POS_ERR_IGNORE);
-      
+
         //set flag to write current encoder steps to EEPROM
         sys.writeStepsToEEPROM = true;
-      
+
         return STATUS_OK;
     }
 
@@ -206,6 +206,10 @@ byte  executeBcodeLine(const String& gcodeLine){
         Serial.print(F("Right: "));
         Serial.print(rightAxis.read());
         Serial.println(F("mm"));
+
+        kinematics.forward(leftAxis.read(), rightAxis.read(), &sys.xPosition, &sys.yPosition, 0, 0);
+        //set flag to write current encoder steps to EEPROM
+        sys.writeStepsToEEPROM = true;
 
         return STATUS_OK;
     }
@@ -225,6 +229,9 @@ byte  executeBcodeLine(const String& gcodeLine){
         kinematics.forward(leftAxis.read(), rightAxis.read(), &sys.xPosition, &sys.yPosition, 0, 0);
 
         Serial.println(F("Message: The machine chains have been manually re-calibrated."));
+
+        //set flag to write current encoder steps to EEPROM
+        sys.writeStepsToEEPROM = true;
 
         return STATUS_OK;
     }
@@ -281,10 +288,16 @@ byte  executeBcodeLine(const String& gcodeLine){
             else{
                 rightAxis.motorGearboxEncoder.motor.directWrite(speed);
             }
-            
+
             i++;
             execSystemRealtime();
             if (sys.stop){return STATUS_OK;}
+        }
+        if (gcodeLine.indexOf('L') != -1){
+            leftAxis.motorGearboxEncoder.motor.directWrite(0);
+        }
+        else{
+            rightAxis.motorGearboxEncoder.motor.directWrite(0);
         }
         bit_false(sys.state,STATE_POS_ERR_IGNORE);
         return STATUS_OK;
@@ -355,14 +368,14 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         return STATUS_OK;
     }
-    
+
     // Use 'B99 ON' to set FAKE_SERVO mode on,
-    // 'B99' with no parameter, or any parameter other than 'ON' 
+    // 'B99' with no parameter, or any parameter other than 'ON'
     // turns FAKE_SERVO mode off.
     // FAKE_SERVO mode causes the Firmware to mimic a servo,
     // updating the encoder steps even if no servo is connected.
     // Useful for testing on an arduino only (e.g. without motors).
-    // The status of FAKE_SERVO mode is stored in EEPROM[ 4095 ] 
+    // The status of FAKE_SERVO mode is stored in EEPROM[ 4095 ]
     // to persist between resets. Tthat byte is set to '1' when FAKE_SERVO
     // is on, '0' when off. settingsWipe(SETTINGS_RESTORE_ALL) clears the
     // EEPROM to '0', sothat stores '0' at EEPROM[ 4095 ] as well.
