@@ -35,7 +35,6 @@ void settingsLoadFromEEprom(){
     settingsReset(); // Load default values first
     EEPROM.get(300, settingsVersionStruct);
     EEPROM.get(340, tempSettings);
-    EEPROM.get(2048, calibration);
     if (settingsVersionStruct.settingsVersion == SETTINGSVERSION &&
         settingsVersionStruct.eepromValidData == EEPROMVALIDDATA &&
         tempSettings.eepromValidData == EEPROMVALIDDATA){
@@ -75,7 +74,7 @@ void settingsReset() {
     sysSettings.rotationDiskRadius = 250.0;  // float rotationDiskRadius;
     sysSettings.axisDetachTime = 2000;   // int axisDetachTime;
     sysSettings.chainLength = 3360;   // int maximum length of chain;
-    sysSettings.originalChainLength = 1650;   // int originalChainLength;
+    sysSettings.originalChainLength = 1651;   // int originalChainLength;
     sysSettings.encoderSteps = 8113.73; // float encoderSteps;
     sysSettings.distPerRot = 63.5;   // float distPerRot;
     sysSettings.maxFeed = 700;   // int maxFeed;
@@ -106,24 +105,11 @@ void settingsReset() {
     sysSettings.leftChainTolerance = 0.0;    // float leftChainTolerance;
     sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;
     sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
-    sysSettings.topBeamTilt = 0.0;
+    sysSettings.reserved1 = 0.0;
+    sysSettings.reserved2 = 0.0;
+    sysSettings.chainElongationFactor = 8.1E-6; // m/m/N
+    sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
-    sysSettings.enableOpticalCalibration = false;
-    sysSettings.useInterpolationOrCurve = true;
-    sysSettings.calX0 = 0.0;
-    sysSettings.calX1 = 0.0;
-    sysSettings.calX2 = 0.0;
-    sysSettings.calX3 = 0.0;
-    sysSettings.calX4 = 0.0;
-    sysSettings.calX5 = 0.0;
-    sysSettings.calY0 = 0.0;
-    sysSettings.calY1 = 0.0;
-    sysSettings.calY2 = 0.0;
-    sysSettings.calY3 = 0.0;
-    sysSettings.calY4 = 0.0;
-    sysSettings.calY5 = 0.0;
-
-    initializeCalibration();
 }
 
 void settingsWipe(byte resetType){
@@ -141,12 +127,6 @@ void settingsWipe(byte resetType){
       EEPROM.write(i, 0);
     }
   }
-  else if (bit_istrue(resetType, SETTINGS_RESTORE_CALIBRATION)) {
-    for (size_t i = 2048 ; i < sizeof(calibration) + 2048; i++) {
-      EEPROM.write(i, 0);
-    }
-    initializeCalibration();
-  }
   else if (bit_istrue(resetType, SETTINGS_RESTORE_ALL)){
     for (size_t i = 0 ; i < EEPROM.length() ; i++) {
       EEPROM.write(i, 0);
@@ -163,7 +143,6 @@ void settingsSaveToEEprom(){
     settingsVersion_t settingsVersionStruct = {SETTINGSVERSION, EEPROMVALIDDATA};
     EEPROM.put(300, settingsVersionStruct);
     EEPROM.put(340, sysSettings);
-    EEPROM.put(2048, calibration);
 }
 
 void settingsSaveStepstoEEprom(){
@@ -182,6 +161,7 @@ void settingsSaveStepstoEEprom(){
         EEPROMVALIDDATA
       };
       EEPROM.put(310, sysSteps);
+      sys.writeStepsToEEPROM = false;
     }
 }
 
@@ -256,15 +236,12 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
                       break;
                 case 1:
                       sysSettings.machineHeight = value;
-                      kinematics.recomputeGeometry();
                       break;
                 case 2:
                       sysSettings.distBetweenMotors = value;
-                      kinematics.recomputeGeometry();
                       break;
                 case 3:
                       sysSettings.motorOffsetY = value;
-                      kinematics.recomputeGeometry();
                       break;
                 case 4:
                       sysSettings.sledWidth = value;
@@ -322,7 +299,7 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
         case 16:
               sysSettings.zAxisAttached = value;
               break;
-        case 17: 
+        case 17:
               sysSettings.spindleAutomateType = static_cast<SpindleAutomationType>(value);
               break;
         case 18:
@@ -427,64 +404,31 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               break;
         case 40:
               sysSettings.leftChainTolerance = value;
+              kinematics.init();
               break;
         case 41:
               sysSettings.rightChainTolerance = value;
+              kinematics.init();
               break;
         case 42:
               sysSettings.positionErrorLimit = value;
               break;
         case 43:
-              sysSettings.topBeamTilt = value;
-              kinematics.recomputeGeometry();
+              sysSettings.reserved1 = value;
+              kinematics.init();
               break;
-        case 44: case 46: case 47: case 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57: case 58:
-            switch(parameter) {
-                case 44:
-                      sysSettings.enableOpticalCalibration = value;
-                      break;
-                case 46:
-                      sysSettings.useInterpolationOrCurve = value;
-                      break;
-                case 47:
-                      sysSettings.calX0 = value;
-                      break;
-                case 48:
-                      sysSettings.calX1 = value;
-                      break;
-                case 49:
-                      sysSettings.calX2 = value;
-                      break;
-                case 50:
-                      sysSettings.calX3 = value;
-                      break;
-                case 51:
-                      sysSettings.calX4 = value;
-                      break;
-                case 52:
-                      sysSettings.calX5 = value;
-                      break;
-                case 53:
-                      sysSettings.calY0 = value;
-                      break;
-                case 54:
-                      sysSettings.calY1 = value;
-                      break;
-                case 55:
-                      sysSettings.calY2 = value;
-                      break;
-                case 56:
-                      sysSettings.calY3 = value;
-                      break;
-                case 57:
-                      sysSettings.calY4 = value;
-                      break;
-                case 58:
-                      sysSettings.calY5 = value;
-                      break;
-           }
-           kinematics.init();
-           break;
+        case 44:
+              sysSettings.reserved2 = value;
+              kinematics.init();
+              break;
+        case 45:
+              sysSettings.chainElongationFactor = value;
+              kinematics.init();
+              break;
+        case 46:
+              sysSettings.sledWeight = value;
+              kinematics.init();;
+              break;
         default:
               return(STATUS_INVALID_STATEMENT);
     }

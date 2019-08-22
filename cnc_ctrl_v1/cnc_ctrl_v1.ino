@@ -41,9 +41,6 @@ system_t sys;
 // Define the global settings storage - treat as readonly
 settings_t sysSettings;
 
-// Define the calibration values
-calibration_t calibration;
-
 // Global realtime executor bitflag variable for setting various alarms.
 byte systemRtExecAlarm;  
 
@@ -63,6 +60,7 @@ void setup(){
     if (TLE5206 == true) { Serial.print(F(" TLE5206 ")); }
     Serial.println(F(" Detected"));
     sys.inchesToMMConversion = 1;
+    sys.writeStepsToEEPROM = false;
     settingsLoadFromEEprom();
     setupAxes();
     settingsLoadStepsFromEEprom();

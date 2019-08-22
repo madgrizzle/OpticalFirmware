@@ -31,7 +31,6 @@ Copyright 2014-2017 Bar Smith*/
 #define SETTINGS_RESTORE_SETTINGS bit(0)
 #define SETTINGS_RESTORE_MASLOW bit(1)
 #define SETTINGS_RESTORE_ALL bit(2)
-#define SETTINGS_RESTORE_CALIBRATION bit(3)
 
 enum SpindleAutomationType {
   NONE,
@@ -82,21 +81,10 @@ typedef struct {  // I think this is about ~128 bytes in size if I counted corre
   float leftChainTolerance;
   float rightChainTolerance;
   float positionErrorLimit;
-  float topBeamTilt;
-  bool enableOpticalCalibration;
-  bool useInterpolationOrCurve;
-  float calX0;
-  float calX1;
-  float calX2;
-  float calX3;
-  float calX4;
-  float calX5;
-  float calY0;
-  float calY1;
-  float calY2;
-  float calY3;
-  float calY4;
-  float calY5;
+  float reserved1;
+  float reserved2;
+  float chainElongationFactor; // m/m/N. This is the ratio of chain length increase due to chain tension. typically 8x10E-6; // m/m/N
+  float sledWeight; // Newtons. simply multiply kg by 9.8 or pounds by 2.2*9.8  
   byte eepromValidData;  // This should always be last, that way if an error
                          // happens in writing, it will not be written and we
 } settings_t;            // will know to reset the settings

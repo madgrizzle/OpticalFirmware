@@ -15,7 +15,7 @@ Note - For Windows there are three options: "Windows Installer", "Windows Zip", 
 ![Download IDE](https://raw.githubusercontent.com/MaslowCNC/Firmware/master/Documentation/Download%20IDE.jpg)
 
 ### Step 3: Download The Latest Maslow Firmware
-You can do this at http://github.com/MaslowCNC/Firmware/releases/  Click the zip file for the most recent release to download it. Extract the files from the zip folder.
+You can do this at [http://github.com/MaslowCNC/Firmware/releases/](http://github.com/MaslowCNC/Firmware/releases/)  Click the zip file for the most recent release to download it. Extract the files from the zip folder.
 ![Download Firmware](https://raw.githubusercontent.com/MaslowCNC/Firmware/master/Documentation/Download%20Firmware.jpg)
 
 ### Step 4: Open Firmware
@@ -39,5 +39,3 @@ You are now running the latest firmware. *Great Job!* Make sure you close the Ar
 
 ### Step 9: Proceed
 You have finished setting up the Maslow firmware. Proceed to the [next step](http://maslowcommunitygarden.org/GroundControl.html?instructions=true) to install Ground Control on your OS.
-
-test

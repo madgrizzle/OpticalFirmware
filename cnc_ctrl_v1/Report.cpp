@@ -130,6 +130,12 @@ void  reportAlarmMessage(byte alarm_code) {
         sys.stop = true;
         break;
         }
+      case ALARM_BOARD_VERSION_INVALID: {
+        Serial.println(F("The Board version number from this Motor Control board is invalid. ---(!!!)--- Quit and make sure it is properly seated and that the correct version of firmware is loaded... "));
+        sys.stop = true;
+        while(1); //
+        break;
+        }
     }
   #endif
 }
@@ -182,34 +188,10 @@ void reportMaslowSettings() {
     Serial.print(F("$40=")); Serial.println(sysSettings.leftChainTolerance, 8);
     Serial.print(F("$41=")); Serial.println(sysSettings.rightChainTolerance, 8);
     Serial.print(F("$42=")); Serial.println(sysSettings.positionErrorLimit, 8);
-    Serial.print(F("$43=")); Serial.println(sysSettings.topBeamTilt, 8);
-    Serial.print(F("$44=")); Serial.println(sysSettings.enableOpticalCalibration, 8);
-    Serial.print(F("$46=")); Serial.println(sysSettings.useInterpolationOrCurve, 8);
-    char buffer[30];
-    dtostre(sysSettings.calX0, buffer, 5, NULL);
-    Serial.print(F("$47=")); Serial.println(buffer);
-    dtostre(sysSettings.calX1, buffer, 5, NULL);
-    Serial.print(F("$48=")); Serial.println(buffer);
-    dtostre(sysSettings.calX2, buffer, 5, NULL);
-    Serial.print(F("$49=")); Serial.println(buffer);
-    dtostre(sysSettings.calX3, buffer, 5, NULL);
-    Serial.print(F("$50=")); Serial.println(buffer);
-    dtostre(sysSettings.calX4, buffer, 5, NULL);
-    Serial.print(F("$51=")); Serial.println(buffer);
-    dtostre(sysSettings.calX5, buffer, 5, NULL);
-    Serial.print(F("$52=")); Serial.println(buffer);
-    dtostre(sysSettings.calY0, buffer, 5, NULL);
-    Serial.print(F("$53=")); Serial.println(buffer);
-    dtostre(sysSettings.calY1, buffer, 5, NULL);
-    Serial.print(F("$54=")); Serial.println(buffer);
-    dtostre(sysSettings.calY2, buffer, 5, NULL);
-    Serial.print(F("$55=")); Serial.println(buffer);
-    dtostre(sysSettings.calY3, buffer, 5, NULL);
-    Serial.print(F("$56=")); Serial.println(buffer);
-    dtostre(sysSettings.calY4, buffer, 5, NULL);
-    Serial.print(F("$57=")); Serial.println(buffer);
-    dtostre(sysSettings.calY5, buffer, 5, NULL);
-    Serial.print(F("$58=")); Serial.println(buffer);
+    Serial.print(F("$43=")); Serial.println(sysSettings.reserved1, 8);
+    Serial.print(F("$44=")); Serial.println(sysSettings.reserved2, 8);
+    Serial.print(F("$45=")); Serial.println(sysSettings.chainElongationFactor, 8);
+    Serial.print(F("$46=")); Serial.println(sysSettings.sledWeight, 8);
 
   #else
     Serial.print(F("$0=")); Serial.print(sysSettings.machineWidth);
@@ -254,41 +236,11 @@ void reportMaslowSettings() {
     Serial.print(F(" (PWM frequency value 1=39,000Hz, 2=4,100Hz, 3=490Hz)\r\n$40=")); Serial.print(sysSettings.leftChainTolerance, 8);
     Serial.print(F(" (chain tolerance, left chain, mm)\r\n$41=")); Serial.print(sysSettings.rightChainTolerance, 8);
     Serial.print(F(" (chain tolerance, right chain, mm)\r\n$42=")); Serial.print(sysSettings.positionErrorLimit, 8);
-    Serial.print(F(" (position error alarm limit, mm)\r\n$43=")); Serial.print(sysSettings.topBeamTilt, 8);
-    Serial.print(F(" (top beam tilt, degrees)\r\n")); Serial.print(kinematics.leftMotorX,8);
-    Serial.print(F(" (left Motor X, mm)\r\n")); Serial.print(kinematics.leftMotorY,8);
-    Serial.print(F(" (left Motor Y, mm)\r\n")); Serial.print(kinematics.rightMotorX,8);
-    Serial.print(F(" (right Motor X, mm)\r\n")); Serial.print(kinematics.rightMotorY,8);
-    Serial.print(F(" (right Motor Y, mm)\r\n")); Serial.print(calibration.xError[15][7]);
-    Serial.print(F(" (Center X Error, mm)\r\n")); Serial.print(calibration.yError[15][7]);
-    Serial.print(F(" (Center Y Error, mm)\r\n$44=")); Serial.print(sysSettings.enableOpticalCalibration);
-    Serial.print(F(" (enable calibration)\r\n$46=")); Serial.print(sysSettings.useInterpolationOrCurve);
-    char buffer[30];
-    dtostre(sysSettings.calX0, buffer, 5, NULL);
-    Serial.print(F(" (use interp or curve)\r\n$47=")); Serial.print(buffer);
-    dtostre(sysSettings.calX1, buffer, 5, NULL);
-    Serial.print(F(" (calX0)\r\n$48=")); Serial.print(buffer);
-    dtostre(sysSettings.calX2, buffer, 5, NULL);
-    Serial.print(F(" (calX1)\r\n$49=")); Serial.print(buffer);
-    dtostre(sysSettings.calX3, buffer, 5, NULL);
-    Serial.print(F(" (calX2)\r\n$50=")); Serial.print(buffer);
-    dtostre(sysSettings.calX4, buffer, 5, NULL);
-    Serial.print(F(" (calX3)\r\n$51=")); Serial.print(buffer);
-    dtostre(sysSettings.calX5, buffer, 5, NULL);
-    Serial.print(F(" (calX4)\r\n$52=")); Serial.print(buffer);
-    dtostre(sysSettings.calY0, buffer, 5, NULL);
-    Serial.print(F(" (calX5)\r\n$53=")); Serial.print(buffer);
-    dtostre(sysSettings.calY1, buffer, 5, NULL);
-    Serial.print(F(" (calY0)\r\n$54=")); Serial.print(buffer);
-    dtostre(sysSettings.calY2, buffer, 5, NULL);
-    Serial.print(F(" (calY1)\r\n$55=")); Serial.print(buffer);
-    dtostre(sysSettings.calY3, buffer, 5, NULL);
-    Serial.print(F(" (calY2)\r\n$56=")); Serial.print(buffer);
-    dtostre(sysSettings.calY4, buffer, 5, NULL);
-    Serial.print(F(" (calY3)\r\n$57=")); Serial.print(buffer);
-    dtostre(sysSettings.calY5, buffer, 5, NULL);
-    Serial.print(F(" (calY4)\r\n$58=")); Serial.print(buffer);
-    Serial.print(F(" (calY5)"));
+    Serial.print(F(" (position error alarm limit, mm)\r\n$43="));  Serial.print(sysSettings.reserved1,8);
+    Serial.print(F(" (reserved1, deg)\r\n$44="));Serial.print(sysSettings.reserved2,8);
+    Serial.print(F(" (reserved2, mm)\r\n$45=")); Serial.print(sysSettings.chainElongationFactor,8);
+    Serial.print(F(" (chain stretch factor, m/m/N)\r\n$46=")); Serial.print(sysSettings.sledWeight,8);
+    Serial.print(F(" (Sled Weight, N)\r\n"));
     Serial.println();
   #endif
 }
@@ -304,6 +256,10 @@ void  returnError(){
         Serial.print(rightAxis.error());
         Serial.print(',');
         Serial.print(incSerialBuffer.spaceAvailable());
+        Serial.print(',');
+        Serial.print(leftAxis.read());
+        Serial.print(',');
+        Serial.print(rightAxis.read());
         Serial.println(F("]"));
         if (!sys.stop) {
           if (!(sys.state & STATE_POS_ERR_IGNORE)) {
