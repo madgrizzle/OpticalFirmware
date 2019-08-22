@@ -369,17 +369,17 @@ byte  executeBcodeLine(const String& gcodeLine){
         return STATUS_OK;
     }
 
-    // Use 'B99 ON' to set FAKE_SERVO mode on,
-    // 'B99' with no parameter, or any parameter other than 'ON'
-    // turns FAKE_SERVO mode off.
-    // FAKE_SERVO mode causes the Firmware to mimic a servo,
-    // updating the encoder steps even if no servo is connected.
-    // Useful for testing on an arduino only (e.g. without motors).
-    // The status of FAKE_SERVO mode is stored in EEPROM[ 4095 ]
-    // to persist between resets. Tthat byte is set to '1' when FAKE_SERVO
-    // is on, '0' when off. settingsWipe(SETTINGS_RESTORE_ALL) clears the
-    // EEPROM to '0', sothat stores '0' at EEPROM[ 4095 ] as well.
-    if(gcodeLine.substring(0, 3) == "B99") {
+        // Use 'B99 ON' to set FAKE_SERVO mode on,
+        // 'B99' with no parameter, or any parameter other than 'ON'
+        // turns FAKE_SERVO mode off.
+        // FAKE_SERVO mode causes the Firmware to mimic a servo,
+        // updating the encoder steps even if no servo is connected.
+        // Useful for testing on an arduino only (e.g. without motors).
+        // The status of FAKE_SERVO mode is stored in EEPROM[ 4095 ]
+        // to persist between resets. Tthat byte is set to '1' when FAKE_SERVO
+        // is on, '0' when off. settingsWipe(SETTINGS_RESTORE_ALL) clears the
+        // EEPROM to '0', sothat stores '0' at EEPROM[ 4095 ] as well.
+        if(gcodeLine.substring(0, 3) == "B99") {
         int letterO = gcodeLine.indexOf('O');
         int letterN = gcodeLine.indexOf('N');
         if ((letterO != -1) && (letterN != -1)) {
