@@ -245,6 +245,43 @@ void   setupAxes(){
         aux8 = 46;
         aux9 = 47;
     }
+    else if (pcbVersion == 6){ // TLE9201
+        //TLE9201 PCB v1.6 Detected
+        //MP1 - Right Motor
+        encoder1A = 20;  // INPUT
+        encoder1B = 21;  // INPUT
+        in1 = 4;         // OUTPUT - TLE9201 DIR
+        in2 = 5;         // OUTPUT - TLE9201 ENABLE
+        enA = 6;         // OUTPUT - TLE9201 PWM
+        ENA = enA;
+
+        //MP2 - Z-axis
+        encoder2A = 19;  // INPUT
+        encoder2B = 18;  // INPUT
+        in3 = 7;         // OUTPUT - TLE9201 DIR
+        in4 = 8;         // OUTPUT - TLE9201 ENABLE
+        enB = 9;         // OUTPUT - TLE9201 PWM
+        ENB = enB;
+
+        //MP3 - Left Motor
+        encoder3A = 2;   // INPUT
+        encoder3B = 3;   // INPUT
+        in5 = 11;        // OUTPUT - TLE9201 DIR
+        in6 = 12;        // OUTPUT - TLE9201 ENABLE
+        enC = 10;        // OUTPUT - TLE9201 PWM
+        ENC = enC;
+
+        //AUX pins
+        aux1 = 40;
+        aux2 = 41;
+        aux3 = 42;
+        aux4 = 43;
+        aux5 = 68;
+        aux6 = 69;
+        aux7 = 45;
+        aux8 = 46;
+        aux9 = 47;
+    }
     else { // board not recognized
         reportAlarmMessage(ALARM_BOARD_VERSION_INVALID);
         // Do we need to assure that no gpio pins are activated?
@@ -260,25 +297,6 @@ void   setupAxes(){
         in3 = 0;
         in4 = 0;
         enB = 0;
-
-        //MP3 - Left Motor
-        encoder3A = 0;
-        encoder3B = 0;
-        in5 = 0;
-        in6 = 0;
-        enC = 0;
-
-        //AUX pins
-        aux1 = 0;
-        aux2 = 0;
-        aux3 = 0;
-        aux4 = 0;
-        aux5 = 0;
-        aux6 = 0;
-        aux7 = 0;
-        aux8 = 0;
-        aux9 = 0;
-    }
 
         //MP3 - Left Motor
         encoder3A = 0;
