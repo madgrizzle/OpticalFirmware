@@ -25,10 +25,11 @@
                            // LOOPINTERVAL tuning
 #define KINEMATICSDBG 0    // set to 1 for additional kinematics debug messaging
 
+#define FAKE_SERVO_PERMITTED 42 // store this value
 #define FAKE_SERVO 4095    // store the state of FAKE_SERVO in EEPROM[ 4095 ] to preserve
                            // the state of FAKE_SERVO mode over resets.
                            // Use 'B99 ON' to turn FAKE_SERVO mode on and set EEPROM[ 4095 ] to '1',
-                           // 'B99' with no parameter, or any parameter other than 'ON' 
+                           // 'B99' with no parameter, or any parameter other than 'ON'
                            // puts a '0' in that location and turns FAKE_SERVO mode off.
                            // Useful for testing on an arduino only (e.g. without motors).
 
@@ -37,7 +38,7 @@
                            // use PlatformIO to build the simavr environment.
 
 // #define alarmsTLE9201   // Uncomment this to make TLE9201 over-current/over-temp alarms active
-                           // Note that in normal operation these alarms are often triggered by 
+                           // Note that in normal operation these alarms are often triggered by
                            // abrupt direction change. Until acceleration control is available,
                            // the alarms aren't useful.
 
