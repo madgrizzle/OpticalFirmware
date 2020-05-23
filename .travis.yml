@@ -7,7 +7,7 @@ install:
 script:
     - pio run -e megaatmega2560
     - mv .pio/build/megaatmega2560/firmware.hex ./madgrizzle-$(sed -n -e 's/^.*VERSIONNUMBER //p' cnc_ctrl_v1/Maslow.h).hex
-
+    - ls -l
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
@@ -17,3 +17,4 @@ deploy:
   draft: true
   on:
     tags: true
+    
