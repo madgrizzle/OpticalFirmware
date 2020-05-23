@@ -6,6 +6,7 @@ install:
     - pio lib install "Servo"
 
 script:
+    - git fetch
     - git checkout release/madgrizzle
     - platformio run -e megaatmega2560
     - "mv .pio/build/megaatmega2560/firmware.hex ./madgrizzle-$(sed -n -e 's/^.*VERSIONNUMBER //p' cnc_ctrl_v1/Maslow.h).hex"
