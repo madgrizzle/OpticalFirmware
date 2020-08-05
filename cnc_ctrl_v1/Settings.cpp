@@ -104,9 +104,9 @@ void settingsReset() {
     sysSettings.fPWM = 3;   // byte fPWM;
     sysSettings.leftChainTolerance = 0.0;    // float leftChainTolerance;
     sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;
+    sysSettings.zAxisUpperLimit = NAN; // float zAxisUpperLimit
+    sysSettings.zAxisLowerLimit = NAN;  // float zAxisLowerLimit
     sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
-    sysSettings.reserved1 = 0.0;
-    sysSettings.reserved2 = 0.0;
     sysSettings.chainElongationFactor = 8.1E-6; // m/m/N
     sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
@@ -386,6 +386,7 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
             break;
         case 37:
               sysSettings.chainSagCorrection = value;
+              kinematics.init();
               break;
         case 38:
               settingsSaveStepstoEEprom();
@@ -414,12 +415,10 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.positionErrorLimit = value;
               break;
         case 43:
-              sysSettings.reserved1 = value;
-              kinematics.init();
+              sysSettings.zAxisUpperLimit = value;
               break;
         case 44:
-              sysSettings.reserved2 = value;
-              kinematics.init();
+              sysSettings.zAxisLowerLimit = value;
               break;
         case 45:
               sysSettings.chainElongationFactor = value;
