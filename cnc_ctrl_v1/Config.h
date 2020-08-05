@@ -26,17 +26,10 @@
 #define KINEMATICSDBG 0    // set to 1 for additional kinematics debug messaging
 
 #define FAKE_SERVO_PERMITTED 42 // store this value
-<<<<<<< HEAD
 #define FAKE_SERVO 4095    // store the state of FAKE_SERVO in EEPROM[ 4095 ] to preserve
                            // the state of FAKE_SERVO mode over resets.
                            // Use 'B99 ON' to turn FAKE_SERVO mode on and set EEPROM[ 4095 ] to '1',
                            // 'B99' with no parameter, or any parameter other than 'ON'
-=======
-#define FAKE_SERVO 4095    // in EEPROM[ 4095 ] to preserve
-                           // the state of FAKE_SERVO mode over resets.
-                           // Use 'B99 ON' to turn FAKE_SERVO mode on and set EEPROM[ 4095 ] to '1',
-                           // 'B99' with no parameter, or any parameter other than 'ON' 
->>>>>>> maslow/master
                            // puts a '0' in that location and turns FAKE_SERVO mode off.
                            // Useful for testing on an arduino only (e.g. without motors).
 
