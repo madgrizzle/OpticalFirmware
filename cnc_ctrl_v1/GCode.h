@@ -34,6 +34,7 @@ float extractGcodeValue(const String&, char, const float&);
 byte  executeBcodeLine(const String&);
 void  executeGcodeLine(const String&);
 void  executeMcodeLine(const String&);
+void  executeScodeLine(const String&);
 void  executeOtherCodeLine(const String&);
 int   findNextGM(const String&, const int&);
 void  sanitizeCommandString(String&);

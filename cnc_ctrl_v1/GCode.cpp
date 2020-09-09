@@ -398,7 +398,17 @@ byte  executeBcodeLine(const String& gcodeLine){
      }
    return STATUS_INVALID_STATEMENT;
 }
+void  executeScodeLine(const String& gcodeLine){
+ /* executes a single line of gcode beginning with the character 'S' for spindle speed */
 
+  int sNumber = extractGcodeValue(gcodeLine,'S',-1);
+  if (sNumber == -1){
+    sNumber = sys.SpindleSpeed;
+  }
+  if (setSpindleSpeed(sNumber)){
+    sys.SpindleSpeed = sNumber;
+  }
+}
 void  executeGcodeLine(const String& gcodeLine){
     /*
 
@@ -659,6 +669,13 @@ byte  interpretCommandString(String& cmdString){
                         #endif
                         Serial.println(gcodeLine);
                         executeMcodeLine(gcodeLine);
+                    }
+                    else if(gcodeLine[0] == 'S'){
+                        #if defined (verboseDebug) && verboseDebug > 0
+                        Serial.print(F("iCS executing S code: "));
+                        #endif
+                        Serial.println(gcodeLine);
+                        executeScodeLine(gcodeLine);
                     }
                     else {
                         #if defined (verboseDebug) && verboseDebug > 0

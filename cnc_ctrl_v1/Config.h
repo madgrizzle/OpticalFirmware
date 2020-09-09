@@ -20,12 +20,17 @@
 
 // Debugging Options
 #define verboseDebug 0     // set to 0 for no debug messages, 1 for single-line messages, 2 to also output ring buffer contents
+
 #define misloopDebug 0     // set to 1 for a warning every time the movement loop fails
                            // to complete before being interrupted, helpful for loop
                            // LOOPINTERVAL tuning
+
 #define KINEMATICSDBG 0    // set to 1 for additional kinematics debug messaging
 
+#define SPINDLE_SPEED 1    // set to 1 for pwm spindle speed control
+
 #define FAKE_SERVO_PERMITTED 42 // store this value
+
 #define FAKE_SERVO 4095    // store the state of FAKE_SERVO in EEPROM[ 4095 ] to preserve
                            // the state of FAKE_SERVO mode over resets.
                            // Use 'B99 ON' to turn FAKE_SERVO mode on and set EEPROM[ 4095 ] to '1',
@@ -55,12 +60,15 @@
 // Serial variables
 #define INCBUFFERLENGTH 128 // The number of bytes(characters) allocated to the
                             // incoming buffer.
+
 #define EXPGCODELINE 60     // Maximum expected Gcode line length in characters
                             // including line ending character(s).  Assumes
                             // client will not send more than this.  Ground
                             // Control is currently set to 60.  NIST spec allows
                             // 256. This value must be <= INCBUFFERLENGTH
+
 #define MAXBUFFERLINES 4    // The maximum number of lines allowed in the buffer
+
 #define POSITIONTIMEOUT 200 // The minimum number of milliseconds between
                             // position reports sent to Ground Control.  This
                             // cannot be larger than the connection timout in
@@ -72,6 +80,7 @@
 
 #define CMD_RESET 0x18      // ctrl-x., if received the program should do a soft reset
                             // if received the program should do a soft reset
+
 #define CMD_RESET2 '`'      // alternate char because GC won't use control characters in a macro
 
 #endif

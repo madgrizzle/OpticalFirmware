@@ -60,6 +60,7 @@ typedef struct {
   bool  useRelativeUnits;     //
   unsigned long lastSerialRcvd; // The millis of the last rcvd serial command, used by watchdo
   int   lastGCommand;         //Stores the value of the last command run eg: G01 -> 1
+  int   SpindleSpeed;         // store the current spindle speed -> 4000
   int   lastTool;             //Stores the value of the last tool number eg: T4 -> 4
   int   nextTool;             //Stores the value of the next tool number eg: T4 -> 4
   float inchesToMMConversion; //Used to track whether to convert from inches, can probably be done in a way that doesn't require RAM

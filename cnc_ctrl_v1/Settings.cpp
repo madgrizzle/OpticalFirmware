@@ -109,6 +109,8 @@ void settingsReset() {
     sysSettings.reserved2 = 0.0;
     sysSettings.chainElongationFactor = 8.1E-6; // m/m/N
     sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
+    sysSettings.spindleMin = 4000;
+    sysSettings.spindleMax = 24000;
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
 }
 
@@ -429,6 +431,10 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.sledWeight = value;
               kinematics.init();;
               break;
+        case 60:
+              sysSettings.spindleMin = value;
+        case 61:
+              sysSettings.spindleMax = value;       
         default:
               return(STATUS_INVALID_STATEMENT);
     }
