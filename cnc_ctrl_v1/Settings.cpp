@@ -111,6 +111,8 @@ void settingsReset() {
     sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
     sysSettings.spindleMin = 4000;
     sysSettings.spindleMax = 24000;
+    sysSettings.zAxisUpperLimit = NAN; // float zAxisUpperLimit
+    sysSettings.zAxisLowerLimit = NAN;  // float zAxisLowerLimit
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
 }
 
@@ -388,6 +390,7 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
             break;
         case 37:
               sysSettings.chainSagCorrection = value;
+              kinematics.init();
               break;
         case 38:
               settingsSaveStepstoEEprom();
@@ -431,10 +434,18 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.sledWeight = value;
               kinematics.init();;
               break;
+        case 47:      
+              sysSettings.zAxisUpperLimit = value;
+              break;
+        case 48:
+              sysSettings.zAxisLowerLimit = value;
+              break;        
         case 60:
               sysSettings.spindleMin = value;
+              break;
         case 61:
-              sysSettings.spindleMax = value;       
+              sysSettings.spindleMax = value;
+              break;
         default:
               return(STATUS_INVALID_STATEMENT);
     }

@@ -49,6 +49,9 @@ byte systemRtExecAlarm;
 // Define global flag for FAKE_SERVO state
 int FAKE_SERVO_STATE = 0;
 
+// Define global flag for FAKE_SERVO state
+int FAKE_SERVO_STATE = 0;
+
 // Define axes, it might be tighter to define these within the sys struct
 Axis leftAxis;
 Axis rightAxis;
@@ -71,7 +74,7 @@ void setup(){
     if (FAKE_SERVO_STATE == FAKE_SERVO_PERMITTED) { // only this value is accepted
         Serial.println(F("FAKE_SERVO on"));         // to turn this on
     } else {
-        Serial.println(F("FAKE_SERVO off"));        // otherwise
+        Serial.println(F("FAKE_SERVO off"));        // otherwise 
         EEPROM[ FAKE_SERVO ] = 0;                   // force it to the 'off' value
     }
     settingsLoadFromEEprom();
