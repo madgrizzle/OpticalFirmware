@@ -375,7 +375,7 @@ void   setupAxes(){
     if (aux5 > 0) pinMode(aux5,INPUT);
     if (aux6 > 0) pinMode(aux6,INPUT);
     #ifndef SPINDLE_SPEED
-    if (aux7 > 0) pinMode(aux7,INPUT);
+      if (aux7 > 0) pinMode(aux7,INPUT);
     #endif
     if (aux8 > 0) pinMode(aux8,INPUT);
     if (aux9 > 0) pinMode(aux9,INPUT);
