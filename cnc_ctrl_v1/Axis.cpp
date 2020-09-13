@@ -48,13 +48,13 @@ void    Axis::write(const float& targetPosition){
    _timeLastMoved = millis();
 
    // Check that the Z axis position is within limits specified in Settings
-   
+
    if(_axisName == 'Z'){
       if(!isnan(sysSettings.zAxisUpperLimit) && targetPosition > sysSettings.zAxisUpperLimit){
         _pidSetpoint   =  sysSettings.zAxisUpperLimit/ *_mmPerRotation;
         return;
       }
-        
+
       if(!isnan(sysSettings.zAxisLowerLimit) && targetPosition < sysSettings.zAxisLowerLimit){
         _pidSetpoint   =  sysSettings.zAxisLowerLimit/ *_mmPerRotation;
         return;
@@ -78,26 +78,24 @@ float  Axis::setpoint(){
 }
 
 void   Axis::set(const float& newAxisPosition){
-    
-   // update the zAxis upper and lower limits relative to the new axis position
-   
-   if(_axisName == 'Z'){
-      if(!isnan(sysSettings.zAxisUpperLimit)){
-        sysSettings.zAxisUpperLimit += newAxisPosition - read();
-      }
-      
-      if(!isnan(sysSettings.zAxisLowerLimit)){
-        sysSettings.zAxisLowerLimit += newAxisPosition - read();
-      }
-      
-      if(!isnan(sysSettings.zAxisUpperLimit) || !isnan(sysSettings.zAxisLowerLimit)){
-        settingsSaveToEEprom();
-      }
-   }
-   
+    // update the zAxis upper and lower limits relative to the new axis position
+    if(_axisName == 'Z'){
+        if(!isnan(sysSettings.zAxisUpperLimit)){
+            sysSettings.zAxisUpperLimit += newAxisPosition - read();
+        }
+
+        if(!isnan(sysSettings.zAxisLowerLimit)){
+            sysSettings.zAxisLowerLimit += newAxisPosition - read();
+        }
+
+        if(!isnan(sysSettings.zAxisUpperLimit) || !isnan(sysSettings.zAxisLowerLimit)){
+            settingsSaveToEEprom();
+        }
+    }
+
     //reset everything to the new value
     _pidSetpoint  =  newAxisPosition/ *_mmPerRotation;
-    motorGearboxEncoder.encoder.write((newAxisPosition * *_encoderSteps)/ *_mmPerRotation);   
+    motorGearboxEncoder.encoder.write((newAxisPosition * *_encoderSteps)/ *_mmPerRotation);
 }
 
 long Axis::steps(){
@@ -117,7 +115,6 @@ void   Axis::setSteps(const long& steps){
 
 void   Axis::computePID(){
 
-    
       if (FAKE_SERVO_STATE == FAKE_SERVO_PERMITTED) {
           if (motorGearboxEncoder.motor.attached()){
             // Adds up to 10% error just to simulate servo noise
@@ -257,9 +254,9 @@ void   Axis::detachIfIdle(){
 }
 
 void   Axis::endMove(const float& finalTarget){
-    
+
    _timeLastMoved = millis();
-   
+
    // Check that the Z axis position is within limits specified in Settings
 
    if(_axisName == 'Z'){
@@ -267,7 +264,7 @@ void   Axis::endMove(const float& finalTarget){
         _pidSetpoint   =  sysSettings.zAxisUpperLimit/ *_mmPerRotation;
         return;
       }
-      
+
       if(!isnan(sysSettings.zAxisLowerLimit) && finalTarget < sysSettings.zAxisLowerLimit){
         _pidSetpoint   =  sysSettings.zAxisLowerLimit/ *_mmPerRotation;
         return;
@@ -275,9 +272,8 @@ void   Axis::endMove(const float& finalTarget){
    }
 
    _pidSetpoint    = finalTarget/ *_mmPerRotation;
-    
-}
 
+}
 
 void   Axis::stop(){
     /*

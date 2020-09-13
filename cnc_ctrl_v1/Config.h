@@ -30,7 +30,6 @@
 #define SPINDLE_SPEED 1    // set to 1 for pwm spindle speed control
 
 #define FAKE_SERVO_PERMITTED 42 // store this value
-
 #define FAKE_SERVO 4095    // store the state of FAKE_SERVO in EEPROM[ 4095 ] to preserve
                            // the state of FAKE_SERVO mode over resets.
                            // Use 'B99 ON' to turn FAKE_SERVO mode on and set EEPROM[ 4095 ] to '1',
