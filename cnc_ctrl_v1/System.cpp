@@ -47,20 +47,16 @@ void  calibrateChainLengths(String gcodeLine){
         Serial.println(F("Measuring out left chain"));
         singleAxisMove(&leftAxis, sysSettings.originalChainLength, (sysSettings.maxFeed * .9));
 
-        Serial.print(leftAxis.read());
+        Serial.print(sysSettings.originalChainLength);
         Serial.println(F("mm"));
-
-        leftAxis.detach();
     }
     else if(extractGcodeValue(gcodeLine, 'R', 0)){
         //measure out the right chain
         Serial.println(F("Measuring out right chain"));
         singleAxisMove(&rightAxis, sysSettings.originalChainLength, (sysSettings.maxFeed * .9));
 
-        Serial.print(rightAxis.read());
+        Serial.print(sysSettings.originalChainLength);
         Serial.println(F("mm"));
-
-        rightAxis.detach();
     }
 
 }
@@ -376,6 +372,7 @@ void   setupAxes(){
     if (aux6 > 0) pinMode(aux6,INPUT);
     #ifndef SPINDLE_SPEED
     if (aux7 > 0) pinMode(aux7,INPUT);
+      if (aux7 > 0) pinMode(aux7,INPUT);
     #endif
     if (aux8 > 0) pinMode(aux8,INPUT);
     if (aux9 > 0) pinMode(aux9,INPUT);
