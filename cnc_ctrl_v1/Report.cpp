@@ -192,6 +192,8 @@ void reportMaslowSettings() {
     Serial.print(F("$44=")); Serial.println(sysSettings.zAxisLowerLimit, 8);
     Serial.print(F("$45=")); Serial.println(sysSettings.chainElongationFactor, 8);
     Serial.print(F("$46=")); Serial.println(sysSettings.sledWeight, 8);
+    Serial.print(F("$60=")); Serial.println(sysSettings.spindleMin,8);
+    Serial.print(F("$61=")); Serial.println(sysSettings.spindleMax,8);
 
   #else
     Serial.print(F("$0=")); Serial.print(sysSettings.machineWidth);
@@ -239,8 +241,10 @@ void reportMaslowSettings() {
     Serial.print(F(" (position error alarm limit, mm)\r\n$43="));  Serial.print(sysSettings.zAxisUpperLimit,8);
     Serial.print(F(" (z axis upper limit, mm)\r\n$44="));Serial.print(sysSettings.zAxisLowerLimit,8);
     Serial.print(F(" (z axis lower limit, mm)\r\n$45=")); Serial.print(sysSettings.chainElongationFactor,8);
-    Serial.print(F(" (chain stretch factor, m/m/N)\r\n$46=")); Serial.print(sysSettings.sledWeight,8);
-    Serial.print(F(" (Sled Weight, N)\r\n"));
+    Serial.print(F(" (chain stretch factor, m/m/N)\r\n$46=")); Serial.print(sysSettings.sledWeight,8); 
+    Serial.print(F(" (Sled Weight, N)\r\n"));Serial.println(sysSettings.spindleMin,8);
+    Serial.print(F(" (Spindle turn on speed \r\n")); Serial.println(sysSettings.spindleMax,8);
+    Serial.print(F(" (Spindle maximum rpm \r\n));
     Serial.println();
   #endif
 }

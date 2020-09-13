@@ -79,7 +79,7 @@ void settingsReset() {
     sysSettings.distPerRot = 63.5;   // float distPerRot;
     sysSettings.maxFeed = 700;   // int maxFeed;
     sysSettings.zAxisAttached = true;   // zAxisAttached;
-    sysSettings.spindleAutomateType = NONE;  // bool spindleAutomate;
+    sysSettings.spindleAutomateType = SPEED_CONTROL_RELAY_ACTIVE_HIGH;  // bool spindleAutomate;
     sysSettings.maxZRPM = 12.60;  // float maxZRPM;
     sysSettings.zDistPerRot = 3.17;   // float zDistPerRot;
     sysSettings.zEncoderSteps = 7560.0; // float zEncoderSteps;
@@ -104,11 +104,13 @@ void settingsReset() {
     sysSettings.fPWM = 3;   // byte fPWM;
     sysSettings.leftChainTolerance = 0.0;    // float leftChainTolerance;
     sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;
+    sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
     sysSettings.zAxisUpperLimit = NAN; // float zAxisUpperLimit
     sysSettings.zAxisLowerLimit = NAN;  // float zAxisLowerLimit
-    sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
     sysSettings.chainElongationFactor = 8.1E-6; // m/m/N
     sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
+    sysSettings.spindleMin = 4000;
+    sysSettings.spindleMax = 24000;
     sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
 }
 
@@ -386,7 +388,6 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
             break;
         case 37:
               sysSettings.chainSagCorrection = value;
-              kinematics.init();
               break;
         case 38:
               settingsSaveStepstoEEprom();
@@ -415,10 +416,12 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.positionErrorLimit = value;
               break;
         case 43:
-              sysSettings.zAxisUpperLimit = value;
+              sysSettings.reserved1 = value;
+              kinematics.init();
               break;
         case 44:
               sysSettings.zAxisLowerLimit = value;
+              kinematics.init();
               break;
         case 45:
               sysSettings.chainElongationFactor = value;
@@ -428,6 +431,10 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               sysSettings.sledWeight = value;
               kinematics.init();;
               break;
+        case 60:
+              sysSettings.spindleMin = value;
+        case 61:
+              sysSettings.spindleMax = value;       
         default:
               return(STATUS_INVALID_STATEMENT);
     }

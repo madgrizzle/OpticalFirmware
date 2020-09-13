@@ -24,6 +24,7 @@ bool TLE9201;
 
 // extern values using AUX pins defined in  setupAxes()
 int SpindlePowerControlPin;  // output for controlling spindle power
+int SpindleSpeedControlPin;  // pwm output for spindle control
 int ProbePin;                // use this input for zeroing zAxis with G38.2 gcode
 int LaserPowerPin;           // Use this output to turn on and off a laser diode
 
@@ -355,6 +356,10 @@ void   setupAxes(){
 
     // Assign AUX pins to extern variables used by functions like Spindle and Probe
     SpindlePowerControlPin = aux1;   // output for controlling spindle power
+    #ifdef SPINDLE_SPEED
+      SpindleSpeedControlPin = 45;     // pwm output for controlling spindle speed
+      pinMode(SpindleSpeedControlPin, OUTPUT);
+    #endif
     LaserPowerPin = aux2;            // output for controlling a laser diode
     ProbePin = aux4;                 // use this input for zeroing zAxis with G38.2 gcode
     pinMode(LaserPowerPin, OUTPUT);
@@ -369,7 +374,9 @@ void   setupAxes(){
     if (aux3 > 0) pinMode(aux3,INPUT);
     if (aux5 > 0) pinMode(aux5,INPUT);
     if (aux6 > 0) pinMode(aux6,INPUT);
-    if (aux7 > 0) pinMode(aux7,INPUT);
+    #ifndef SPINDLE_SPEED
+      if (aux7 > 0) pinMode(aux7,INPUT);
+    #endif
     if (aux8 > 0) pinMode(aux8,INPUT);
     if (aux9 > 0) pinMode(aux9,INPUT);
 }
