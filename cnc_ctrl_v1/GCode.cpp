@@ -20,6 +20,7 @@ Copyright 2014-2017 Bar Smith*/
 
 #include "Maslow.h"
 #include <EEPROM.h>
+#include "math.h"
 
 maslowRingBuffer incSerialBuffer;
 String readyCommandString = "";  //KRK why is this a global?
@@ -371,6 +372,51 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         // Use 'B99 ON' to set FAKE_SERVO mode on,
         // 'B99' with no parameter, or any parameter other than 'ON'
+    if(gcodeLine.substring(0, 3) == "B17"){
+        //The B17 sets the current Z position as Upper Limit for zAxis
+        if(!isnan(zAxis.read())){
+            settingsStoreGlobalSetting(byte(43), zAxis.read());
+            Serial.print(F("Upper limit set to: "));
+            Serial.println(isnan(sysSettings.zAxisUpperLimit) ? F("   "): String(sysSettings.zAxisUpperLimit / sys.inchesToMMConversion));
+            return STATUS_OK;
+        } else {
+            Serial.println(F("Error setting limit"));
+            return STATUS_GCODE_INVALID_TARGET;
+        }
+    }
+
+    if(gcodeLine.substring(0, 3) == "B18"){
+        //The B18 sets the current Z position as Lower Limit for zAxis
+        if(!isnan(zAxis.read())){
+            settingsStoreGlobalSetting(byte(44), zAxis.read());
+            Serial.print(F("Lower limit set to: "));
+            Serial.println(isnan(sysSettings.zAxisLowerLimit) ? F("   "): String(sysSettings.zAxisLowerLimit / sys.inchesToMMConversion));
+            return STATUS_OK;
+        } else {
+            Serial.println(F("Error setting limit"));
+            return STATUS_GCODE_INVALID_TARGET;
+        }
+    }
+
+    if(gcodeLine.substring(0, 3) == "B19"){
+        //The B19 clears limits for zAxis
+        settingsStoreGlobalSetting(byte(43), NAN);
+        settingsStoreGlobalSetting(byte(44), NAN);
+        Serial.println(F("Z Axis Limits Cleared"));
+        return STATUS_OK;
+    }
+
+    if(gcodeLine.substring(0, 3) == "B20"){
+        //The B20 echoes limits for zAxis
+        Serial.print(F("Z Axis Upper Limit: "));
+        Serial.print(isnan(sysSettings.zAxisUpperLimit) ? F("NAN") : String(sysSettings.zAxisUpperLimit / sys.inchesToMMConversion));
+        Serial.print(F(" Lower Limit: "));
+        Serial.println(isnan(sysSettings.zAxisLowerLimit) ? F("NAN"): String(sysSettings.zAxisLowerLimit / sys.inchesToMMConversion));
+        return STATUS_OK;
+    }
+
+        // Use 'B99 ON' to set FAKE_SERVO mode on,
+        // 'B99' with no parameter, or any parameter other than 'ON'
         // turns FAKE_SERVO mode off.
         // FAKE_SERVO mode causes the Firmware to mimic a servo,
         // updating the encoder steps even if no servo is connected.
@@ -398,7 +444,17 @@ byte  executeBcodeLine(const String& gcodeLine){
      }
    return STATUS_INVALID_STATEMENT;
 }
+void  executeScodeLine(const String& gcodeLine){
+ /* executes a single line of gcode beginning with the character 'S' for spindle speed */
 
+  int sNumber = extractGcodeValue(gcodeLine,'S',-1);
+  if (sNumber == -1){
+    sNumber = sys.SpindleSpeed;
+  }
+  if (setSpindleSpeed(sNumber)){
+    sys.SpindleSpeed = sNumber;
+  }
+}
 void  executeGcodeLine(const String& gcodeLine){
     /*
 
@@ -566,6 +622,9 @@ void  sanitizeCommandString(String& cmdString){
                 cmdString.remove(pos, 1);
                 if (line_flags & LINE_FLAG_COMMENT_PARENTHESES) { line_flags &= ~(LINE_FLAG_COMMENT_PARENTHESES); }
             }
+           else {
+                cmdString.remove(pos, 1);
+            }
         }
         else {
             if (cmdString[pos] < ' ') {
@@ -659,6 +718,13 @@ byte  interpretCommandString(String& cmdString){
                         #endif
                         Serial.println(gcodeLine);
                         executeMcodeLine(gcodeLine);
+                    }
+                    else if(gcodeLine[0] == 'S'){
+                        #if defined (verboseDebug) && verboseDebug > 0
+                        Serial.print(F("iCS executing S code: "));
+                        #endif
+                        Serial.println(gcodeLine);
+                        executeScodeLine(gcodeLine);
                     }
                     else {
                         #if defined (verboseDebug) && verboseDebug > 0
@@ -776,7 +842,9 @@ void G2(const String& readString, int G2orG3){
 
     float X2      = sys.inchesToMMConversion*extractGcodeValue(readString, 'X', X1/sys.inchesToMMConversion);
     float Y2      = sys.inchesToMMConversion*extractGcodeValue(readString, 'Y', Y1/sys.inchesToMMConversion);
-    float Z2      = sys.inchesToMMConversion*extractGcodeValue(readString, 'Z', Z1/sys.inchesToMMConversion);
+    // Read target Z position from gcode. If it is not specified then set it to NAN so it will not be used.
+    float Z2      = sys.inchesToMMConversion*extractGcodeValue(readString, 'Z', NAN);
+    float R       = sys.inchesToMMConversion*extractGcodeValue(readString, 'R', NAN);
     float I       = sys.inchesToMMConversion*extractGcodeValue(readString, 'I', 0.0);
     float J       = sys.inchesToMMConversion*extractGcodeValue(readString, 'J', 0.0);
     sys.feedrate      = sys.inchesToMMConversion*extractGcodeValue(readString, 'F', sys.feedrate/sys.inchesToMMConversion);
@@ -784,8 +852,42 @@ void G2(const String& readString, int G2orG3){
     float centerX = X1 + I;
     float centerY = Y1 + J;
 
+    // Calculate center point using radius R if it is provided.
+    if (!isnan(R) && R && (X2 != X1 || Y2 != Y1)) {
+      // e: clockwise -1, counterclockwise 1
+      const float e = (G2orG3 == 2) ? -1 : 1,
+          // X and Y differences
+          dx = X2 - X1,
+          dy = Y2 - Y1,
+          // Linear distance between the points.
+          d = hypot(dx, dy),
+          // Distance to the arc pivot-point.
+          h = sqrt(sq(R) - sq(d * 0.5)),
+          // Point between the two points.
+          mx = (X1 + X2) * 0.5,
+          my = (Y1 + Y2) * 0.5,
+          // Slope of the perpendicular bisector.
+          sx = -dy / d,
+          sy = dx / d;
+      // Pivot-point of the arc.
+      centerX = mx + e * h * sx;
+      centerY = my + e * h * sy;
+      #if defined (verboseDebug) && verboseDebug > 0
+        Serial.print(F("G0"));
+        Serial.print(G2orG3);
+        Serial.print(F(" Radius center: "));
+        Serial.print(centerX);
+        Serial.print(F(","));
+        Serial.println(centerY);
+      #endif
+    }
+
     sys.feedrate = constrain(sys.feedrate, 1, sysSettings.maxFeed);   //constrain the maximum feedrate, 35ipm = 900 mmpm
 
+    // If there is no target Z (Z2) then set Z1 to be NAN so it is not used.
+    if (isnan(Z2)) {
+      Z1 = Z2;
+    }
     if (G2orG3 == 2){
         arc(X1, Y1, Z1, X2, Y2, Z2, centerX, centerY, sys.feedrate, CLOCKWISE);
     }

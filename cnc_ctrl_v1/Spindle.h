@@ -20,5 +20,16 @@
 void  setSpindlePower(bool powerState);
 void  laserOn();
 void  laserOff();
+int  setSpindleSpeed(int spindleSpeed);
+extern int SpindleSpeedControlPin;
+/* spindle speed is scaled from 0 to max with a start speed of the minimum
+  S command will set the speed constrained between min and max
+  M3 turns on
+  M5 turns off
+  spindle speed control pin is 45 by default
+  spindle min is $60
+  spindle max is $61
+  in sysSettings
+*/
 
 #endif
