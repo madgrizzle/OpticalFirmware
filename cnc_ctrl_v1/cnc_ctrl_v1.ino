@@ -49,9 +49,6 @@ byte systemRtExecAlarm;
 // Define global flag for FAKE_SERVO state
 int FAKE_SERVO_STATE = 0;
 
-// Define global flag for FAKE_SERVO state
-int FAKE_SERVO_STATE = 0;
-
 // Define axes, it might be tighter to define these within the sys struct
 Axis leftAxis;
 Axis rightAxis;
