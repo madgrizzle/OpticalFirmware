@@ -470,8 +470,12 @@ void  executeScodeLine(const String& gcodeLine){
   if (sNumber == -1){
     sNumber = sys.SpindleSpeed;
   }
-  if (setSpindleSpeed(sNumber)){
-    sys.SpindleSpeed = sNumber;
+  if (sys.SpindlePower){
+    if (setSpindleSpeed(sNumber)){
+      sys.SpindleSpeed = sNumber;
+    }
+  }else{
+    Serial.println("spindle speed not set when spindle is off");
   }
 }
 void  executeGcodeLine(const String& gcodeLine){

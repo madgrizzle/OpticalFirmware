@@ -63,56 +63,56 @@ void settingsReset() {
     so that if a value is not changed by a user or is not used, it doesn't
     need to be updated here.
     */
-    sysSettings.machineWidth = 2438.4; // float machineWidth;
-    sysSettings.machineHeight = 1219.2; // float machineHeight;
-    sysSettings.distBetweenMotors = 2978.4; // float distBetweenMotors;
-    sysSettings.motorOffsetY = 463.0;  // float motorOffsetY;
-    sysSettings.sledWidth = 310.0;  // float sledWidth;
-    sysSettings.sledHeight = 139.0;  // float sledHeight;
-    sysSettings.sledCG = 79.0;   // float sledCG;
-    sysSettings.kinematicsType = 1;      // byte kinematicsType;
-    sysSettings.rotationDiskRadius = 250.0;  // float rotationDiskRadius;
-    sysSettings.axisDetachTime = 2000;   // int axisDetachTime;
-    sysSettings.chainLength = 3360;   // int maximum length of chain;
-    sysSettings.originalChainLength = 1651;   // int originalChainLength;
-    sysSettings.encoderSteps = 8113.73; // float encoderSteps;
-    sysSettings.distPerRot = 63.5;   // float distPerRot;
-    sysSettings.maxFeed = 700;   // int maxFeed;
-    sysSettings.zAxisAttached = true;   // zAxisAttached;
-    sysSettings.spindleAutomateType = SPEED_CONTROL_RELAY_ACTIVE_HIGH;  // bool spindleAutomate;
-    sysSettings.maxZRPM = 12.60;  // float maxZRPM;
-    sysSettings.zDistPerRot = 3.17;   // float zDistPerRot;
-    sysSettings.zEncoderSteps = 7560.0; // float zEncoderSteps;
-    sysSettings.KpPos = 1300.0; // float KpPos;
-    sysSettings.KiPos = 0.0;    // float KiPos;
-    sysSettings.KdPos = 34.0;   // float KdPos;
-    sysSettings.propWeightPos = 1.0;    // float propWeightPos;
-    sysSettings.KpV = 5.0;    // float KpV;
-    sysSettings.KiV = 0.0;    // float KiV;
-    sysSettings.KdV = 0.28;   // float KdV;
-    sysSettings.propWeightV = 1.0;    // float propWeightV;
-    sysSettings.zKdPos = 1300.0; // float zKpPos;
-    sysSettings.zKiPos = 0.0;    // float zKiPos;
-    sysSettings.zKdPos = 34.0;   // float zKdPos;
-    sysSettings.zPropWeightPos = 1.0;    // float zPropWeightPos;
-    sysSettings.zKpV = 5.0;    // float zKpV;
-    sysSettings.zKiV = 0.0;    // float zKiV;
-    sysSettings.zKdV = 0.28;   // float zKdV;
-    sysSettings.zPropWeightV = 1.0;    // float zPropWeightV;
-    sysSettings.chainSagCorrection = 0.0;  // float chainSagCorrection;
-    sysSettings.chainOverSprocket = 1;   // byte chainOverSprocket;
-    sysSettings.fPWM = 3;   // byte fPWM;
-    sysSettings.leftChainTolerance = 0.0;    // float leftChainTolerance;
-    sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;
-    sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;
-    sysSettings.reserved1 = 0.0;
-    sysSettings.reserved2 = 0.0;
-    sysSettings.chainElongationFactor = 8.1E-6; // m/m/N
-    sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
-    sysSettings.spindleMin = 4000;
-    sysSettings.spindleMax = 24000;
-    sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;
-}
+    sysSettings.machineWidth = 2438.4; // float machineWidth;              4
+    sysSettings.machineHeight = 1219.2; // float machineHeight;            4
+    sysSettings.distBetweenMotors = 2978.4; // float distBetweenMotors;    4
+    sysSettings.motorOffsetY = 463.0;  // float motorOffsetY;              4
+    sysSettings.sledWidth = 310.0;  // float sledWidth;                    4
+    sysSettings.sledHeight = 139.0;  // float sledHeight;                  4 
+    sysSettings.sledCG = 79.0;   // float sledCG;                          4 -
+    sysSettings.kinematicsType = 1;      // byte kinematicsType;           1
+    sysSettings.rotationDiskRadius = 250.0;  // float rotationDiskRadius;  1
+    sysSettings.axisDetachTime = 2000;   // int axisDetachTime;            2
+    sysSettings.chainLength = 3360;   // int maximum length of chain;      2
+    sysSettings.originalChainLength = 1651;   // int originalChainLength;  2
+    sysSettings.encoderSteps = 8113.73; // float encoderSteps;             4
+    sysSettings.distPerRot = 63.5;   // float distPerRot;                  4
+    sysSettings.maxFeed = 700;   // int maxFeed;                           2
+    sysSettings.zAxisAttached = true;   // zAxisAttached;                  1
+    sysSettings.spindleAutomateType = SPEED_CONTROL_RELAY_ACTIVE_HIGH;  // 1 bool spindleAutomate;
+    sysSettings.maxZRPM = 12.60;  // float maxZRPM;                        4
+    sysSettings.zDistPerRot = 3.17;   // float zDistPerRot;                4
+    sysSettings.zEncoderSteps = 7560.0; // float zEncoderSteps;            4 
+    sysSettings.KpPos = 1300.0; // float KpPos;                            4 -
+    sysSettings.KiPos = 0.0;    // float KiPos;                            4
+    sysSettings.KdPos = 34.0;   // float KdPos;                            4
+    sysSettings.propWeightPos = 1.0;    // float propWeightPos;            4
+    sysSettings.KpV = 5.0;    // float KpV;                                4
+    sysSettings.KiV = 0.0;    // float KiV;                                4 
+    sysSettings.KdV = 0.28;   // float KdV;                                4 -
+    sysSettings.propWeightV = 1.0;    // float propWeightV;                4
+    sysSettings.zKdPos = 1300.0; // float zKpPos;                          4
+    sysSettings.zKiPos = 0.0;    // float zKiPos;                          4
+    sysSettings.zKdPos = 34.0;   // float zKdPos;                          4
+    sysSettings.zPropWeightPos = 1.0;    // float zPropWeightPos;          4 
+    sysSettings.zKpV = 5.0;    // float zKpV;                              4 -
+    sysSettings.zKiV = 0.0;    // float zKiV;                              4
+    sysSettings.zKdV = 0.28;   // float zKdV;                              4
+    sysSettings.zPropWeightV = 1.0;    // float zPropWeightV;              4
+    sysSettings.chainSagCorrection = 0.0;  // float chainSagCorrection;    4
+    sysSettings.chainOverSprocket = 1;   // byte chainOverSprocket;        1
+    sysSettings.fPWM = 3;   // byte fPWM;                                  1
+    sysSettings.leftChainTolerance = 0.0;    // float leftChainTolerance;  4 
+    sysSettings.rightChainTolerance = 0.0;    // float rightChainTolerance;4 -
+    sysSettings.positionErrorLimit = 2.0;  // float positionErrorLimit;    4
+    sysSettings.zAxisUpperLimit = NAN; // float zAxisUpperLimit            4
+    sysSettings.zAxisLowerLimit = NAN;  // float zAxisLowerLimit           4
+    sysSettings.chainElongationFactor = 8.1E-6; // m/m/N                   4
+    sysSettings.sledWeight = 11.6*9.8; // Newtons. For a sled with one ring4 kit, one Rigid 2200 router and two 2.35kg bricks on a 5/8" thick mdf 18" diameter base.
+    sysSettings.spindleMin = 4000;                                   //    2
+    sysSettings.spindleMax = 24000;                                  //    2
+    sysSettings.eepromValidData = EEPROMVALIDDATA; // byte eepromValidData;1
+}        // 36 * 4 bytes, 6* 2 bytes, 7* 1 byte = 144+12+7= 163 bytes
 
 void settingsWipe(byte resetType){
   /*
@@ -432,9 +432,13 @@ byte settingsStoreGlobalSetting(const byte& parameter,const float& value){
               kinematics.init();;
               break;
         case 60:
-              sysSettings.spindleMin = value;
+              sysSettings.spindleMin = (int)value;
+              Serial.print(F("\r\nnew spindle min="));Serial.print(sysSettings.spindleMin);
+              break;
         case 61:
-              sysSettings.spindleMax = value;       
+              sysSettings.spindleMax = (int)value;       
+              Serial.print(F("\r\nnew spindle max="));Serial.print(sysSettings.spindleMax);
+              break;
         default:
               return(STATUS_INVALID_STATEMENT);
     }

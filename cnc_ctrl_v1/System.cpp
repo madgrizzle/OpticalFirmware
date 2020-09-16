@@ -19,12 +19,13 @@ Copyright 2014-2017 Bar Smith*/
 
 #include "Maslow.h"
 
+
 bool TLE5206;
 bool TLE9201;
 
 // extern values using AUX pins defined in  setupAxes()
-int SpindlePowerControlPin;  // output for controlling spindle power
-int SpindleSpeedControlPin;  // pwm output for spindle control
+int SpindlePowerControlPin;  //power relay or servo control to operate power switch for spindle
+int SpindleSpeedPin;         // pwm output of S command spindle speed
 int ProbePin;                // use this input for zeroing zAxis with G38.2 gcode
 int LaserPowerPin;           // Use this output to turn on and off a laser diode
 
@@ -275,7 +276,7 @@ void   setupAxes(){
         aux4 = 43;
         aux5 = 68;
         aux6 = 69;
-        aux7 = 45;
+        aux7 = 45; // this is spindle pwm output, but on the board it is labelled Aux 8
         aux8 = 46;
         aux9 = 47;
     }
@@ -353,8 +354,8 @@ void   setupAxes(){
     // Assign AUX pins to extern variables used by functions like Spindle and Probe
     SpindlePowerControlPin = aux1;   // output for controlling spindle power
     #ifdef SPINDLE_SPEED
-      SpindleSpeedControlPin = 45;     // pwm output for controlling spindle speed
-      pinMode(SpindleSpeedControlPin, OUTPUT);
+      SpindleSpeedPin = 45;     // pwm output for controlling spindle speed
+      pinMode(SpindleSpeedPin, OUTPUT);
     #endif
     LaserPowerPin = aux2;            // output for controlling a laser diode
     ProbePin = aux4;                 // use this input for zeroing zAxis with G38.2 gcode
@@ -751,6 +752,7 @@ byte systemExecuteCmdstring(String& cmdString){
                 //   }
                 // } else { // Store global setting.
                   if(!readFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT); }
+                  Serial.print(F("the value received: "));Serial.println(value);
                   if((cmdString[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
                   return(settingsStoreGlobalSetting((byte)parameter, value));
                 // }

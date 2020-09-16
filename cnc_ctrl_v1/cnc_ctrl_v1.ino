@@ -59,7 +59,7 @@ Axis zAxis;
 Kinematics kinematics;
 
 void setup(){
-    Serial.begin(57600);
+    Serial.begin(115200);
     Serial.print(F("PCB v1."));
     Serial.print(getPCBVersion());
     if (TLE5206 == true) { Serial.print(F(" TLE5206 ")); }

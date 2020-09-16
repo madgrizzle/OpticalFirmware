@@ -60,6 +60,7 @@ typedef struct {
   bool  useRelativeUnits;     //
   unsigned long lastSerialRcvd; // The millis of the last rcvd serial command, used by watchdo
   int   lastGCommand;         //Stores the value of the last command run eg: G01 -> 1
+  bool  SpindlePower;         // store the spindle power state
   int   SpindleSpeed;         // store the current spindle speed -> 4000
   int   lastTool;             //Stores the value of the last tool number eg: T4 -> 4
   int   nextTool;             //Stores the value of the next tool number eg: T4 -> 4
@@ -77,7 +78,8 @@ extern Axis zAxis;
 extern maslowRingBuffer incSerialBuffer;
 extern Kinematics kinematics;
 extern byte systemRtExecAlarm;
-extern int SpindlePowerControlPin;
+extern int SpindlePowerControlPin;        // relay for spindle power
+extern int SpindleSpeedPin;               // pwm output for spindle control
 extern int LaserPowerPin;
 extern int ProbePin;
 extern int SO1;

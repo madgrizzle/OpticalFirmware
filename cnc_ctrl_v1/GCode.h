@@ -25,6 +25,8 @@ Copyright 2014-2017 Bar Smith*/
 extern String readyCommandString; //next command queued up and ready to send
 extern String gcodeLine; //The next individual line of gcode (for example G91 G01 X19 would be run as two lines)
 
+extern int SpindlePowerControlPin;
+
 void initGCode();
 void gcodeExecuteLoop();
 void readSerialCommands();
@@ -45,7 +47,7 @@ void  G4(const String&);
 void  G10(const String&);
 void  G38(const String&);
 void  setInchesToMillimetersConversion(float);
-extern int SpindlePowerControlPin;
+
 extern int ProbePin;
 extern int FAKE_SERVO_STATE;
 
