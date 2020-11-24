@@ -60,13 +60,10 @@ typedef struct {
   bool  useRelativeUnits;     //
   unsigned long lastSerialRcvd; // The millis of the last rcvd serial command, used by watchdo
   int   lastGCommand;         //Stores the value of the last command run eg: G01 -> 1
-  bool  SpindlePower;         // store the spindle power state
-  int   SpindleSpeed;         // store the current spindle speed -> 4000
   int   lastTool;             //Stores the value of the last tool number eg: T4 -> 4
   int   nextTool;             //Stores the value of the next tool number eg: T4 -> 4
   float inchesToMMConversion; //Used to track whether to convert from inches, can probably be done in a way that doesn't require RAM
   float feedrate;             //The feedrate of the machine in mm/min
-  bool writeStepsToEEPROM;    // Flag to determine when need to write encoder steps to EEPROM.. used in execSystemRealtime and axis.attach
   // THE FOLLOWING IS USED FOR IMPORTING SETTINGS FROM FIRMWARE v1.00 AND EARLIER 
   // It can be deleted at some point
   byte oldSettingsFlag;
@@ -75,19 +72,12 @@ extern system_t sys;
 extern Axis leftAxis;
 extern Axis rightAxis;
 extern Axis zAxis;
-extern maslowRingBuffer incSerialBuffer;
+extern RingBuffer incSerialBuffer;
 extern Kinematics kinematics;
 extern byte systemRtExecAlarm;
-extern int SpindlePowerControlPin;        // relay for spindle power
-extern int SpindleSpeedPin;               // pwm output for spindle control
+extern int SpindlePowerControlPin;
 extern int LaserPowerPin;
 extern int ProbePin;
-extern int SO1;
-extern int SO2;
-extern int SO3;
-extern int ENA;
-extern int ENB;
-extern int ENC;
 
 void  calibrateChainLengths(String);
 void  setupAxes();

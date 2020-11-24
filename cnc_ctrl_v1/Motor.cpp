@@ -48,6 +48,15 @@ int  Motor::setupMotor(const int& pwmPin, const int& pin1, const int& pin2){
     digitalWrite(_pin1,    LOW);
     digitalWrite(_pin2,    LOW) ;
 
+  }else if (TB6643 == true ) {
+    // EBS V1.5
+    pinMode(_pwmPin,   INPUT);
+    pinMode(_pin1,     OUTPUT);
+    pinMode(_pin2,     OUTPUT);
+
+    //stop the motor
+    digitalWrite(_pin1,    LOW);
+    digitalWrite(_pin2,    LOW);
   } else if (TLE9201 == true) {
   //set pinmodes
     pinMode(_pwmPin,   OUTPUT);
@@ -81,7 +90,11 @@ void Motor::detach(){
           //stop the motor
           digitalWrite(_pin1,    LOW);
           digitalWrite(_pin2,    LOW) ;
-        } else if (TLE9201 == true) {
+        }else if (TB6643 == true){
+        //stop the motor
+        digitalWrite(_pin1,    LOW);
+        digitalWrite(_pin2,    LOW) ;
+      }     else if (TLE9201 == true) {
         //stop the motor
           digitalWrite(_pin2,    HIGH); // TLE9201 ENABLE pin, LOW = on
           analogWrite(_pwmPin,   0);
@@ -122,7 +135,7 @@ void Motor::write(int speed, bool force){
         bool usePin1 = ((_pin1 != 4) && (_pin1 != 13) && (_pin1 != 11) && (_pin1 != 12)); // avoid PWM using timer0 or timer1
         bool usePin2 = ((_pin2 != 4) && (_pin2 != 13) && (_pin2 != 11) && (_pin2 != 12)); // avoid PWM using timer0 or timer1
         bool usepwmPin = ((TLE5206 == false) && (_pwmPin != 4) && (_pwmPin != 13) && (_pwmPin != 11) && (_pwmPin != 12)); // avoid PWM using timer0 or timer1
-        if (!(TLE5206 || TLE9201)) { // L298 boards
+        if (!(TLE5206 || TLE9201)) {  // NOT L298 boards
             if (forward){
                 if (usepwmPin){
                     digitalWrite(_pin1 , HIGH );
@@ -228,6 +241,19 @@ void Motor::write(int speed, bool force){
             digitalWrite(dirPin, dirCMD); // TLE9201 DIR pin
             analogWrite (_pwmPin, speed); // TLE9201 PWM pin
             digitalWrite(enablePin, LOW); // TLE9201 ENABLE pin, HIGH = disable
+        }else if (TB6643) { //EBS 1.5
+             if (forward) {
+                if (speed > 0) {
+                        analogWrite(_pin1 , speed);
+                        digitalWrite(_pin2 , LOW); 
+                } else { // speed = 0 so put on the brakes
+                    digitalWrite(_pin1 , HIGH);
+                    digitalWrite(_pin2 , HIGH);
+                }
+            } else { // reverse      
+                    digitalWrite(_pin1 , LOW);
+                    analogWrite(_pin2 , speed);          
+            }
         }
     else {} // add new boards here
     }
