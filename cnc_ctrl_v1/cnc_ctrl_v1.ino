@@ -1,8 +1,4 @@
-/*This file is part of the Maslow Control Software.
-    The Maslow Control Software is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+/*This file is pa
     Maslow Control Software is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -33,6 +29,7 @@
 
 // TLE9201 version
 // TLE5206 version
+// EastBaySource TB6643 V1.5
 
 #include "Maslow.h"
 #include <EEPROM.h>
@@ -64,6 +61,7 @@ void setup(){
     Serial.print(getPCBVersion());
     if (TLE5206 == true) { Serial.print(F(" TLE5206 ")); }
     if (TLE9201 == true) { Serial.print(F(" TLE9201 ")); }
+    if (TB6643 == true){Serial.print(F("  TB6643 "));}
     Serial.println(F(" Detected"));
     sys.inchesToMMConversion = 1;
     sys.writeStepsToEEPROM = false;
@@ -71,7 +69,7 @@ void setup(){
     if (FAKE_SERVO_STATE == FAKE_SERVO_PERMITTED) { // only this value is accepted
         Serial.println(F("FAKE_SERVO on"));         // to turn this on
     } else {
-        Serial.println(F("FAKE_SERVO off"));        // otherwise
+        Serial.println(F("FAKE_SERVO off"));        // otherwise 
         EEPROM[ FAKE_SERVO ] = 0;                   // force it to the 'off' value
     }
     settingsLoadFromEEprom();
@@ -115,6 +113,7 @@ void loop(){
     if (sys.stop){               // only called on sys.stop to prevent stopping
         initMotion();            // on USB disconnect.  Might consider removing
         setSpindlePower(false);  // this restriction for safety if we are
+        laserOff();
     }                            // comfortable that USB disconnects are
                                  // not a common occurrence anymore
     kinematics.init();

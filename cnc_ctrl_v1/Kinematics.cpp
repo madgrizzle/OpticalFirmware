@@ -98,6 +98,8 @@ void  Kinematics::_inverse(float xTarget,float yTarget, float* aChainLength, flo
 
 void  Kinematics::_quadrilateralInverse(float xTarget,float yTarget, float* aChainLength, float* bChainLength){
 
+    //Confirm that the coordinates are on the wood
+    _verifyValidTarget(&xTarget, &yTarget); // OK 
     //coordinate shift to put (0,0) in the center of the plywood from the left sprocket
     y = (halfHeight) + sysSettings.motorOffsetY  - yTarget;
     x = (sysSettings.distBetweenMotors/2.0) + xTarget;

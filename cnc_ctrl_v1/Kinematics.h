@@ -50,7 +50,8 @@
             float _YOffsetEqn(const float& YPlus, const float& Denominator, const float& Psi);
             void  _MatSolv();
             void  _MyTrig();
-            float x = 0; //target router bit coordinates.
+            //target router bit coordinates.
+            float x = 0; 
             float y = 0;
             float _xCordOfMotor;
             float _yCordOfMotor;
