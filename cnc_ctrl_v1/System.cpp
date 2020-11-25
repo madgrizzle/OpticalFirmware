@@ -421,12 +421,10 @@ int getPCBVersion(){
 *     but the board version number silkscreened on those boards
 *     and reported by the firmware was zero-based - a source of
 *     confusion when creating new boards.
-*       Beginning with board v1.6, the value from the gpio pins for new boards
+*       Beginning with board v1.8, the value from the gpio pins for new boards
 *     will be zero based to match the number reported by the firmware
 *     and the silkscreen.
-
-      but version 1.5 which is 1 based overlaps with version 1.6 which is zero based.  The easist way.. 
-*
+*     *
 *
 *     "x" = not used
 *     #53-#52    #27-#26    #25-#24   #23-#22
@@ -435,11 +433,17 @@ int getPCBVersion(){
 *     GND GND     PU PU     PU  PU    GND PU  -> rev.0001  PCB v1.0 aka beta release board  = 61
 *     GND GND     PU PU     PU  PU    PU  GND -> rev.0002  PCB v1.1                         = 62
 *     GND GND     PU PU     PU  PU    PU  PU  -> rev.0003  PCB v1.2                         = 63
-*      X   X      X   X     PU  PU    PU  PU  -> rev 0.000 PCB v1.2b                        = 0  -silk screened as 1.2b with all 4 pins direct connected to 5V
+*      X   X      X   X     PU  PU    PU  PU  -> rev 0.000 PCB v1.2b                        = 15  -silk screened as 1.2b with all 4 pins direct connected to 5V
 *      x   x      x   x     GND PU    GND GND -> PCB v1.3 and 1.4 TLE5206                   = 4
 *      x   x      GND GND   GND PU    GND PU  -> reserved for v1.4 TLE5206                  = 5
        X   x      GND GND   GND PU    PU  GND -> PCB v1.5b is TB6643                        = 6
 *      x   x      GND GND   GND PU    PU [PU] -> PCB v1.6 TLE9201                           = 7 --> need to manually cut trace or pin and disconnect pin 22 (vers1 label)
+*      
+*      All above this line are 1 based.  below this line will be zero based.  8 will = B001000  ^^^ was off by one.
+*      As of 11/2020, the next board will be version 1.8 and should have pin 25 pulled high with no connection and 22, 23, 24 pins all shorted to ground. 
+*      
+*      X   X                PU  GND   GND GND -> RESERVED for next board                    = 8
+*      X   X                PU  PU    PU  PU  -> ALREADy TAKEN AS 1.2B                      = 15
 */
     pinMode(VERS1,INPUT_PULLUP);
     pinMode(VERS2,INPUT_PULLUP);
@@ -465,17 +469,18 @@ int getPCBVersion(){
             TLE9201 = false;
             break;
         case B001000: case B000110: //  v 5
-            pinCheck &= B000110; // this should be 101 for 5, not 110 for 6 !! wrong pins?
+            pinCheck &= B000110; // this should be 101 for 5, not 110 for 6 all above are off by 1
             TB6643 = true;
             TLE5206 = false;
             TLE9201 = false;
             break;
-        case B000111:  //v 6
+        case B000111:  //v 1.6 AND V 1.7 (1.7 is a place holder and will not exist because 1.6 uses the same pins)
             pinCheck &= B00111;
             TB6643 = false;
             TLE5206 = false;
             TLE9201 = true;
             break;
+        case B00100: // V8  RESERVED for board version 1.8
     }
     return pinCheck<8 ? pinCheck-1 : pinCheck;
 }
