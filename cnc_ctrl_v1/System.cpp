@@ -477,7 +477,7 @@ int getPCBVersion(){
             TLE9201 = true;
             break;
     }
-    return pinCheck<6 ? pinCheck-1 : pinCheck;
+    return pinCheck<8 ? pinCheck-1 : pinCheck;
 }
 
 
