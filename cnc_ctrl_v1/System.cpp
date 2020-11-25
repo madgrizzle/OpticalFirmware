@@ -453,25 +453,25 @@ int getPCBVersion(){
     // ideally 
     switch (pinCheck) {
         // boards v1.1, v1.2, v1.3 don't strap VERS3-6 low
-        case B111101: case B111110: case B111111: // v1.0, v1.1, v1.2, v1.3
-            pinCheck &= B001111; // strip off the unstrapped bits
+        case B111101: case B111110: case B111111: case 001111:// v1.0, v1.1, v1.2, v1.3
+            pinCheck &= B000011; // strip off the unstrapped bits
             TLE5206 = false;
             TLE9201 = false;
             break;
         case B111100: case B000100: // some versions of board v1.4 don't strap VERS5-6 low
-            pinCheck &= B001111;    // strip off the unstrapped bits
+            pinCheck &= B000100;    // strip off the unstrapped bits
             TB6643 = false;
             TLE5206 = true;
             TLE9201 = false;
             break;
-        case B001000: case B000101: //  v 5
-            pinCheck &= B001111; // this should be 101 for 5, not 110 for 6 !! wrong pins?
+        case B001000: case B000110: //  v 5
+            pinCheck &= B000110; // this should be 101 for 5, not 110 for 6 !! wrong pins?
             TB6643 = true;
             TLE5206 = false;
             TLE9201 = false;
             break;
-        case B000110:  //v 6
-            pinCheck &= B001111;
+        case B000111:  //v 6
+            pinCheck &= B00111;
             TB6643 = false;
             TLE5206 = false;
             TLE9201 = true;
