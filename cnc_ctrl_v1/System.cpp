@@ -433,7 +433,7 @@ int getPCBVersion(){
 *     GND GND     PU PU     PU  PU    GND PU  -> rev.0001  PCB v1.0 aka beta release board  = 61
 *     GND GND     PU PU     PU  PU    PU  GND -> rev.0002  PCB v1.1                         = 62
 *     GND GND     PU PU     PU  PU    PU  PU  -> rev.0003  PCB v1.2                         = 63
-*      X   X      X   X     PU  PU    PU  PU  -> rev 0.000 PCB v1.2b                        = 15  -silk screened as 1.2b with all 4 pins direct connected to 5V and all disconnected pins if set to pullup will read high
+*      X   X      X   X     PU  PU    PU  PU  -> rev 0.000 PCB v1.2b                        = 15  or 31, or 63 -silk screened as 1.2b with all 4 pins direct connected to 5V and all disconnected pins if set to pullup will read high
 *      x   x      x   x     GND PU    GND GND -> PCB v1.3 and 1.4 TLE5206                   = 4
 *      x   x      GND GND   GND PU    GND PU  -> reserved for v1.4 TLE5206                  = 5
        X   x      GND GND   GND PU    PU  GND -> PCB v1.5b is TB6643                        = 6
