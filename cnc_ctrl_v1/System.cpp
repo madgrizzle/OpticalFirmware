@@ -19,11 +19,14 @@ Copyright 2014-2017 Bar Smith*/
 
 #include "Maslow.h"
 
+
 bool TLE5206;
 bool TLE9201;
+bool TB6643;
 
 // extern values using AUX pins defined in  setupAxes()
-int SpindlePowerControlPin;  // output for controlling spindle power
+int SpindlePowerControlPin;  //power relay or servo control to operate power switch for spindle
+int SpindleSpeedPin;         // pwm output of S command spindle speed
 int ProbePin;                // use this input for zeroing zAxis with G38.2 gcode
 int LaserPowerPin;           // Use this output to turn on and off a laser diode
 
@@ -46,20 +49,16 @@ void  calibrateChainLengths(String gcodeLine){
         Serial.println(F("Measuring out left chain"));
         singleAxisMove(&leftAxis, sysSettings.originalChainLength, (sysSettings.maxFeed * .9));
 
-        Serial.print(leftAxis.read());
+        Serial.print(sysSettings.originalChainLength);
         Serial.println(F("mm"));
-
-        leftAxis.detach();
     }
     else if(extractGcodeValue(gcodeLine, 'R', 0)){
         //measure out the right chain
         Serial.println(F("Measuring out right chain"));
         singleAxisMove(&rightAxis, sysSettings.originalChainLength, (sysSettings.maxFeed * .9));
 
-        Serial.print(rightAxis.read());
+        Serial.print(sysSettings.originalChainLength);
         Serial.println(F("mm"));
-
-        rightAxis.detach();
     }
 
 }
@@ -245,6 +244,36 @@ void   setupAxes(){
         aux8 = 46;
         aux9 = 47;
     }
+    else if(pcbVersion == 5){ // EBS PCB v1.5b Detected
+        
+        //MP1 - Right Motor
+        encoder1A = 2;  // INPUT
+        encoder1B = 3;  // INPUT
+        in1 = 9;        // OUTPUT
+        in2 = 10;       // OUTPUT
+        //enA = 12;     // errorFlag
+
+        //MP2 - Z-axis
+        encoder2A = 18; // INPUT
+        encoder2B = 19; // INPUT
+        in3 = 7;        // OUTPUT
+        in4 = 8;        // OUTPUT
+        //enB = 8;      // errorFlag
+
+        //MP3 - Left Motor
+        encoder3A = 21; // INPUT
+        encoder3B = 20; // INPUT
+        in5 = 6;        // OUTPUT
+        in6 = 5;        // OUTPUT
+        //enC = 5;      // errorFlag
+        //AUX pins
+        aux1 = 48;
+        aux2 = 49;
+        aux3 = 51;
+        aux4 = 50;
+        aux5 = 43;
+        aux6 = 44;
+    }
     else if (pcbVersion == 6){ // TLE9201
         //TLE9201 PCB v1.6 Detected
         //MP1 - Right Motor
@@ -278,7 +307,7 @@ void   setupAxes(){
         aux4 = 43;
         aux5 = 68;
         aux6 = 69;
-        aux7 = 45;
+        aux7 = 45; // this is spindle pwm output, but on the board it is labelled Aux 8
         aux8 = 46;
         aux9 = 47;
     }
@@ -318,19 +347,19 @@ void   setupAxes(){
     }
 
     /*
-    * Set motor directions - Left and Right must turn in opposite directions, and 
+    * Set motor directions - Left and Right must turn in opposite directions, and
     * the setting chainOverSprocket reverses their directions. The Z motor is not
     * affected by chainOverSprocket.
     * The TLE9201 uses dedicated DIR, PWM and DISable pins,
-    * so logic from previous chips won't work. 
+    * so logic from previous chips won't work.
     * The direction logic for the TLE9201 is handled in Motor::write()
     */
     if(sysSettings.chainOverSprocket == 1){
         if (!TLE9201) {
             leftAxis.setup (enC, in6, in5, encoder3B, encoder3A, 'L', LOOPINTERVAL);
             rightAxis.setup(enA, in1, in2, encoder1A, encoder1B, 'R', LOOPINTERVAL);
-        } 
-        else { // TLE9201 
+        }
+        else { // TLE9201
         // TLE9201 values: (pwm, enable, direction, encoderB, encoderA, name, LOOPINTERVAL)
             leftAxis.setup (enC, in5, in6, encoder3B, encoder3A, 'L', LOOPINTERVAL);
             rightAxis.setup(enA, in1, in2, encoder1A, encoder1B, 'R', LOOPINTERVAL);
@@ -339,11 +368,11 @@ void   setupAxes(){
     else{ // chain Under Sprocket...
         if (!TLE9201) {
             leftAxis.setup (enC, in5, in6, encoder3A, encoder3B, 'L', LOOPINTERVAL);
-            rightAxis.setup(enA, in2, in1, encoder1B, encoder1A, 'R', LOOPINTERVAL);
+            rightAxis.setup(enA, in2, in1, encoder1B, encoder1A, 'R', LOOPINTERVAL); //in2,in1
         }
         else {
             leftAxis.setup (enC, in5, in6, encoder3A, encoder3B, 'L', LOOPINTERVAL);
-            rightAxis.setup(enA, in1, in2, encoder1B, encoder1A, 'R', LOOPINTERVAL);
+            rightAxis.setup(enA, in1, in2, encoder1B, encoder1A, 'R', LOOPINTERVAL); //in1,in2?? this should be backwards like everything else?
         }
     }
 
@@ -355,6 +384,10 @@ void   setupAxes(){
 
     // Assign AUX pins to extern variables used by functions like Spindle and Probe
     SpindlePowerControlPin = aux1;   // output for controlling spindle power
+    #ifdef SPINDLE_SPEED
+      SpindleSpeedPin = 45;     // pwm output for controlling spindle speed
+      pinMode(SpindleSpeedPin, OUTPUT);
+    #endif
     LaserPowerPin = aux2;            // output for controlling a laser diode
     ProbePin = aux4;                 // use this input for zeroing zAxis with G38.2 gcode
     pinMode(LaserPowerPin, OUTPUT);
@@ -369,37 +402,48 @@ void   setupAxes(){
     if (aux3 > 0) pinMode(aux3,INPUT);
     if (aux5 > 0) pinMode(aux5,INPUT);
     if (aux6 > 0) pinMode(aux6,INPUT);
-    if (aux7 > 0) pinMode(aux7,INPUT);
+    #ifndef SPINDLE_SPEED
+      if (aux7 > 0) pinMode(aux7,INPUT);
+    #endif
     if (aux8 > 0) pinMode(aux8,INPUT);
     if (aux9 > 0) pinMode(aux9,INPUT);
 }
 
 int getPCBVersion(){
 /*
-*       On the original Maslow L298P boards, 
-*     D22-D23 and D52-D53 on XIO were used to 
-*     indicate the board revision number in binary. 
-*     The software uses INPUT_PULLUP to read these pins 
+*       On the original Maslow L298P boards,
+*     D22-D23 and D52-D53 on XIO were used to
+*     indicate the board revision number in binary.
+*     The software uses INPUT_PULLUP to read these pins
 *     and detect the shield version. TLE5206 boards
 *     expanded the XIO pins to allow more board numbers.
 *       The value read from the gpio pins is/was 1-based,
 *     but the board version number silkscreened on those boards
 *     and reported by the firmware was zero-based - a source of
-*     confusion when creating new boards. 
-*       Beginning with board v1.6, the value from the gpio pins for new boards
-*     will be zero-based to match the number reported by the firmware
+*     confusion when creating new boards.
+*       Beginning with board v1.8, the value from the gpio pins for new boards
+*     will be zero based to match the number reported by the firmware
 *     and the silkscreen.
-*     
-*     
+*     *
+*
 *     "x" = not used
 *     #53-#52    #27-#26    #25-#24   #23-#22
 *     -------    -------    -------   -------
-*     GND GND     PU PU     PU  PU    GND PU  -> rev.0001  PCB v1.0 aka beta release board
-*     GND GND     PU PU     PU  PU    PU  GND -> rev.0002  PCB v1.1
-*     GND GND     PU PU     PU  PU    PU  PU  -> rev.0003  PCB v1.2
-*      x   x      x   x     GND PU    GND GND -> PCB v1.3 and 1.4 TLE5206
-*      x   x      GND GND   GND PU    GND PU  -> reserved for v1.4 TLE5206, v1.5 is unused
-*      x   x      GND GND   GND PU    PU  GND -> PCB v1.6 TLE9201
+*     128 64      32 16     8    4    2    1    binary math values.  add if value is PU
+*     GND GND     PU PU     PU  PU    GND PU  -> rev.0001  PCB v1.0 aka beta release board  = 61
+*     GND GND     PU PU     PU  PU    PU  GND -> rev.0002  PCB v1.1                         = 62
+*     GND GND     PU PU     PU  PU    PU  PU  -> rev.0003  PCB v1.2                         = 63
+*      X   X      X   X     PU  PU    PU  PU  -> rev 0.000 PCB v1.2b                        = 15  or 31, or 63 -silk screened as 1.2b with all 4 pins direct connected to 5V and all disconnected pins if set to pullup will read high
+*      x   x      x   x     GND PU    GND GND -> PCB v1.3 and 1.4 TLE5206                   = 4
+*      x   x      GND GND   GND PU    GND PU  -> reserved for v1.4 TLE5206                  = 5
+       X   x      GND GND   GND PU    PU  GND -> PCB v1.5b is TB6643                        = 6
+*      x   x      GND GND   GND PU    PU [PU] -> PCB v1.6 TLE9201                           = 7 --> need to manually cut trace or pin and disconnect pin 22 (vers1 label)
+*      
+*      All above this line are 1 based.  below this line will be zero based.  8 will = B001000  ^^^ was off by one.
+*      As of 11/2020, the next board will be version 1.8 and should have pin 25 pulled high with no connection and 22, 23, 24 pins all shorted to ground. 
+*      
+*      X   X                PU  GND   GND GND -> RESERVED for next board                    = 8
+*      X   X                PU  PU    PU  PU  -> ALREADy TAKEN AS 1.2B                      = 15
 */
     pinMode(VERS1,INPUT_PULLUP);
     pinMode(VERS2,INPUT_PULLUP);
@@ -408,24 +452,41 @@ int getPCBVersion(){
     pinMode(VERS5,INPUT_PULLUP);
     pinMode(VERS6,INPUT_PULLUP);
     int pinCheck = (32*digitalRead(VERS6) + 16*digitalRead(VERS5) + 8*digitalRead(VERS4) + 4*digitalRead(VERS3) + 2*digitalRead(VERS2) + 1*digitalRead(VERS1));
+    // everything should be grounded except those pulled high for counting
+    // according to the above pincheck should result in , 1 = 000001, 2 = 000010, 3 = 000100, 4 = 001000, 5 = 010000, 6 = 100000;
+    // ideally 
     switch (pinCheck) {
         // boards v1.1, v1.2, v1.3 don't strap VERS3-6 low
-        case B111101: case B111110: case B111111: // v1.1, v1.2, v1.3
+        case B111101: case B111110: case B111111: case 001111:// v1.0, v1.1, v1.2, v1.3
             pinCheck &= B000011; // strip off the unstrapped bits
             TLE5206 = false;
             TLE9201 = false;
+            TB6643 = false;
             break;
-        case B110100: case B000100: // some versions of board v1.4 don't strap VERS5-6 low
-            pinCheck &= B000111;    // strip off the unstrapped bits
+        case B111100: case B000100: case B000101: // some versions of board v1.4 don't strap VERS5-6 low
+            pinCheck &= B000101;    // strip off the unstrapped bits
+            TB6643 = false;
             TLE5206 = true;
             TLE9201 = false;
             break;
-        case B000110:
+        case B000110: //  v 5
+            pinCheck &= B000110; // this should be 101 for 5, not 110 for 6 all above are off by 1
+            TB6643 = true;
+            TLE5206 = false;
+            TLE9201 = false;
+            break;
+        case B000111:  //v 1.6 AND V 1.7 (1.7 is a place holder and will not exist because 1.6 uses the same pins)
+            pinCheck &= B000111;
+            TB6643 = false;
             TLE5206 = false;
             TLE9201 = true;
             break;
+        case B01000: // V8  RESERVED for board version 1.8
+            pinCheck &= B001000;
+            break;
     }
-    return pinCheck<6 ? pinCheck-1 : pinCheck;
+     
+    return pinCheck<8 ? pinCheck-1 : pinCheck;
 }
 
 
@@ -465,7 +526,7 @@ void setPWMPrescalers(int prescalerChoice) {
     // The upper limit to PWM frequency for TLE5206 is 1,000Hz
     //  so only '3' is valid
         prescalerChoice = 3;
-    } else if (TLE9201) { 
+    } else if (TLE9201) {
     // The upper limit to PWM frequency for TLE9201 is 20,000Hz
         prescalerChoice = constrain(prescalerChoice,2,3);
     }
@@ -588,6 +649,8 @@ void systemReset(){
     rightAxis.detach();
     zAxis.detach();
     setSpindlePower(false);
+    // TODO: define in this scope:
+    //LaserOff();
     // Reruns the initial setup function and calls stop to re-init state
     sys.stop = true;
     setup();
@@ -748,6 +811,7 @@ byte systemExecuteCmdstring(String& cmdString){
                 //   }
                 // } else { // Store global setting.
                   if(!readFloat(cmdString, char_counter, value)) { return(STATUS_BAD_NUMBER_FORMAT); }
+                  Serial.print(F("the value received: "));Serial.println(value);
                   if((cmdString[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
                   return(settingsStoreGlobalSetting((byte)parameter, value));
                 // }

@@ -52,14 +52,14 @@ void readSerialCommands(){
                 quickCommandFlag = true;
                 bit_false(sys.pause, PAUSE_FLAG_USER_PAUSE);
                 sys.writeStepsToEEPROM = true;
-                // report the command 
+                // report the command
                 Serial.println(F("\n\nsoft reset commanded\n\n"));
                 // mimic the firmware reset response sequence so GC thinks we've just reset
                 Serial.print(F("\nPCB v1."));
                 Serial.print(getPCBVersion());
                 if (TLE5206 == true) { Serial.print(F(" TLE5206 ")); }
                 Serial.println(F(" Detected"));
-                Serial.println(F("Grbl v1.00"));  
+                Serial.println(F("Grbl v1.00"));
                 Serial.println(F("ready"));
                 reportStatusMessage(STATUS_OK);
             }
@@ -186,10 +186,10 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         //clear the flag, re-enable position error limit
         bit_false(sys.state,STATE_POS_ERR_IGNORE);
-      
+
         //set flag to write current encoder steps to EEPROM
         sys.writeStepsToEEPROM = true;
-      
+
         return STATUS_OK;
     }
 
@@ -207,7 +207,7 @@ byte  executeBcodeLine(const String& gcodeLine){
         Serial.print(F("Right: "));
         Serial.print(rightAxis.read());
         Serial.println(F("mm"));
-      
+
         kinematics.forward(leftAxis.read(), rightAxis.read(), &sys.xPosition, &sys.yPosition, 0, 0);
         //set flag to write current encoder steps to EEPROM
         sys.writeStepsToEEPROM = true;
@@ -233,7 +233,7 @@ byte  executeBcodeLine(const String& gcodeLine){
 
         //set flag to write current encoder steps to EEPROM
         sys.writeStepsToEEPROM = true;
-      
+
         return STATUS_OK;
     }
 
@@ -289,7 +289,7 @@ byte  executeBcodeLine(const String& gcodeLine){
             else{
                 rightAxis.motorGearboxEncoder.motor.directWrite(speed);
             }
-            
+
             i++;
             execSystemRealtime();
             if (sys.stop){return STATUS_OK;}
@@ -370,6 +370,8 @@ byte  executeBcodeLine(const String& gcodeLine){
         return STATUS_OK;
     }
 
+        // Use 'B99 ON' to set FAKE_SERVO mode on,
+        // 'B99' with no parameter, or any parameter other than 'ON'
     if(gcodeLine.substring(0, 3) == "B17"){
         //The B17 sets the current Z position as Upper Limit for zAxis
 
@@ -461,7 +463,21 @@ byte  executeBcodeLine(const String& gcodeLine){
      }
    return STATUS_INVALID_STATEMENT;
 }
+void  executeScodeLine(const String& gcodeLine){
+ /* executes a single line of gcode beginning with the character 'S' for spindle speed */
 
+  int sNumber = extractGcodeValue(gcodeLine,'S',-1);
+  if (sNumber == -1){
+    sNumber = sys.SpindleSpeed;
+  }
+  if (sys.SpindlePower){
+    if (setSpindleSpeed(sNumber)){
+      sys.SpindleSpeed = sNumber;
+    }
+  }else{
+    Serial.println("spindle speed not set when spindle is off");
+  }
+}
 void  executeGcodeLine(const String& gcodeLine){
     /*
 
@@ -725,6 +741,13 @@ byte  interpretCommandString(String& cmdString){
                         #endif
                         Serial.println(gcodeLine);
                         executeMcodeLine(gcodeLine);
+                    }
+                    else if(gcodeLine[0] == 'S'){
+                        #if defined (verboseDebug) && verboseDebug > 0
+                        Serial.print(F("iCS executing S code: "));
+                        #endif
+                        Serial.println(gcodeLine);
+                        executeScodeLine(gcodeLine);
                     }
                     else {
                         #if defined (verboseDebug) && verboseDebug > 0
